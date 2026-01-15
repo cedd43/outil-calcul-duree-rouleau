@@ -6,72 +6,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calcul Durée Rouleau</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background: #f4f4f4;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .container {
-            max-width: 500px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-        }
-        button {
-            margin-top: 15px;
-            padding: 10px;
-            width: 100%;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #0056b3;
-        }
-        .result {
-            margin-top: 15px;
-            font-weight: bold;
-            color: #333;
-        }
-        .error {
-            color: red;
-            font-weight: bold;
-        }
-        .footer {
-            margin-top: 24px;
-            font-size: 12px;
-            color: #555;
-            text-align: center;
-        }
-        .section {
-            display: none;
-        }
-        .sub-section {
-            margin-top: 25px;
-            padding-top: 10px;
-            border-top: 1px solid #ccc;
-        }
-        .sub-section h3 {
-            margin-bottom: 10px;
-            color: #007bff;
-        }
+        
+:root{
+    /* Ajuste ici l'intensité du voile et du fond du formulaire */
+    --bg-overlay: 0.45;   /* 0 = pas de voile, 0.6 = plus sombre */
+    --card-bg: 0.92;      /* 1 = blanc opaque, 0.85 = un peu plus transparent */
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0; /* <- important pour le fond plein écran */
+    background: #0b0b0b; /* couleur de secours */
+    /* Fond = image + voile sombre via dégradé */
+    background-image:
+        linear-gradient(rgba(0,0,0,var(--bg-overlay)), rgba(0,0,0,var(--bg-overlay))),
+        url('bg-pem.jpg'); /* <-- mets ton image dans le même dossier que index.html */
+    background-size: cover;         /* couvre tout l'écran */
+    background-position: center;    /* centre l'image */
+    background-attachment: fixed;   /* effet léger parallax sur desktop */
+    background-repeat: no-repeat;
+    padding: 20px; /* espace autour du container */
+}
+
+/* Cartouche du formulaire plus lisible sur fond photo */
+.container {
+    max-width: 560px;           /* un peu plus large pour respirer */
+    margin: 0 auto;
+    background: rgba(255,255,255,var(--card-bg));  /* blanc semi-opaque */
+    padding: 22px;
+    border-radius: 10px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.35);      /* ombre marquée pour le contraste */
+    backdrop-filter: blur(2px); /* bonus si dispo : floute légèrement le fond derrière */
+}
+
+h1 {
+    text-align: center;
+    color: #fff;                /* titre principal sur fond sombre = blanc */
+    text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    margin: 10px 0 18px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    color: #222;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #cfd4dc;
+    border-radius: 6px;
+}
+
+button {
+    margin-top: 15px;
+    padding: 10px;
+    width: 100%;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+button:hover { background: #0056b3; }
+
+.result {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #333;
+}
+.error { color: #d93025; font-weight: bold; }
+
+.section { display: none; }
+
+/* Séparateur visuel pour la partie "Calcul vitesse" */
+.sub-section {
+    margin-top: 28px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(0,0,0,0.12);
+}
+.sub-section h3 {
+    margin-bottom: 10px;
+    color: #007bff;
+}
+
+/* Pied de page en blanc discret sur fond photo */
+.footer {
+    margin-top: 24px;
+    font-size: 12px;
+    color: #f2f2f2;
+    text-align: center;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+
+/* Petits écrans : adoucir les effets, resserrer le layout */
+@media (max-width: 480px) {
+    body { padding: 12px; background-attachment: scroll; }
+    .container { padding: 16px; }
+}
+``
+
     </style>
 </head>
 <body>
