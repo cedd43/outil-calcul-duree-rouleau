@@ -5,16 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calcul Durée Rouleau</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
-        h1 { text-align: center; color: #333; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        label { display: block; margin-top: 10px; }
-        input, select { width: 100%; padding: 8px; margin-top: 5px; }
-        button { margin-top: 15px; padding: 10px; width: 100%; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        .result { margin-top: 15px; font-weight: bold; color: #333; }
-        .footer { margin-top: 24px; font-size: 12px; color: #555; text-align: center; }
-        .section { display: none; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+        .footer {
+            margin-top: 24px;
+            font-size: 12px;
+            color: #555;
+            text-align: center;
+        }
+        .section {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -87,9 +130,9 @@
 
             const out = document.getElementById('resultFeuillard');
             if (poidsMetreG > 0 && poidsRouleau > 0 && vitesse > 0) {
-                const poidsMetreKg = poidsMetreG / 1000; // g/m -> kg/m
+                const poidsMetreKg = poidsMetreG / 1000;
                 const duree = poidsRouleau / (poidsMetreKg * vitesse);
-                out.innerText = `Durée : ${toHMS(duree)}`; // only h:min
+                out.innerText = `Durée : ${toHMS(duree)}`;
             } else {
                 out.innerText = "Veuillez remplir tous les champs correctement.";
             }
@@ -119,9 +162,9 @@
 
             const out = document.getElementById('resultPieces');
             if (nbPieces > 0 && piecesParPas > 0 && taillePasMM > 0 && vitesse > 0) {
-                const taillePasM = taillePasMM / 1000; // mm -> m
+                const taillePasM = taillePasMM / 1000;
                 const duree = (nbPieces * taillePasM) / (piecesParPas * vitesse);
-                out.innerText = `Durée : ${toHMS(duree)}`; // only h:min
+                out.innerText = `Durée : ${duree.toFixed(2)} h (${toHMS(duree)})`;
             } else {
                 out.innerText = "Veuillez remplir tous les champs correctement.";
             }
