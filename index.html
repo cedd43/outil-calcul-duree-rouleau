@@ -97,13 +97,20 @@ button:hover { background: #0056b3; }
 }
 
 /* Pied de page en blanc discret sur fond photo */
+
 .footer {
     margin-top: 24px;
-    font-size: 12px;
-    color: #f2f2f2;
+    font-size: 14px; /* un peu plus grand */
+    color: #fff; /* blanc pur pour contraste */
     text-align: center;
-    text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    font-weight: bold;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.7); /* ombre pour détacher du fond */
+    background: rgba(0,0,0,0.4); /* fond semi-transparent noir */
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: inline-block; /* pour que le fond s'adapte au texte */
 }
+
 
 /* Petits écrans : adoucir les effets, resserrer le layout */
 @media (max-width: 480px) {
