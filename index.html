@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcul Durée Rouleau</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+        h1 { text-align: center; color: #333; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        label { display: block; margin-top: 10px; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; }
+        button { margin-top: 15px; padding: 10px; width: 100%; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 15px; font-weight: bold; color: #333; }
+        .footer { margin-top: 24px; font-size: 12px; color: #555; text-align: center; }
+        .section { display: none; }
+    </style>
+</head>
+<body>
+    <h1>Calcul Durée Rouleau</h1>
+    <div class="container">
+        <label>Choisissez le type :</label>
+        <select id="typeChoix" onchange="toggleSections()">
+            <option value="">-- Sélectionnez --</option>
+            <option value="feuillard">Feuillard</option>
+            <option value="pieces">Pièces Découpées</option>
+        </select>
+
+        <div id="sectionFeuillard" class="section">
+            <h2>Feuillard</h2>
+            <label>Poids du rouleau (kg):</label>
+            <input type="number" id="poidsRouleau" step="0.01" placeholder="ex. 750">
+            <label>Poids par mètre (g/m):</label>
+            <input type="number" id="poidsMetre" step="0.01" placeholder="ex. 2350">
+            <label>Vitesse (m/h):</label>
+            <input type="number" id="vitesseFeuillard" step="0.01" placeholder="ex. 120">
+            <button onclick="calculFeuillard()">Calculer Durée</button>
+            <div class="result" id="resultFeuillard"></div>
+
+            <label>Durée cible (minutes):</label>
+            <input type="number" id="dureeCibleFeuillard" placeholder="ex. 90">
+            <button onclick="calculVitesseFeuillard()">Calculer Vitesse pour durée cible</button>
+            <div class="result" id="resultVitesseFeuillard"></div>
+        </div>
+
+        <div id="sectionPieces" class="section">
+            <h2>Pièces Découpées</h2>
+            <label>Nombre total de pièces:</label>
+            <input type="number" id="nbPieces" placeholder="ex. 25000">
+            <label>Nombre de pièces par pas:</label>
+            <input type="number" id="piecesParPas" placeholder="ex. 4">
+            <label>Taille du pas (mm):</label>
+            <input type="number" id="taillePas" step="0.01" placeholder="ex. 35">
+            <label>Vitesse (m/h):</label>
+            <input type="number" id="vitessePieces" step="0.01" placeholder="ex. 90">
+            <button onclick="calculPieces()">Calculer Durée</button>
+            <div class="result" id="resultPieces"></div>
+
+            <label>Durée cible (minutes):</label>
+            <input type="number" id="dureeCiblePieces" placeholder="ex. 120">
+            <button onclick="calculVitessePieces()">Calculer Vitesse pour durée cible</button>
+            <div class="result" id="resultVitessePieces"></div>
+        </div>
+
+        <div class="footer">outil libre d'accès - C.Duffner - AST PEM - V1.0 - 15/01/26 </div>
+    </div>
+
+    <script>
+        function toggleSections() {
+            const choix = document.getElementById('typeChoix').value;
+            document.getElementById('sectionFeuillard').style.display = (choix === 'feuillard') ? 'block' : 'none';
+            document.getElementById('sectionPieces').style.display = (choix === 'pieces') ? 'block' : 'none';
+        }
+
+        function toHMS(hours) {
+            const totalMinutes = Math.round(hours * 60);
+            const h = Math.floor(totalMinutes / 60);
+            const m = totalMinutes % 60;
+            return `${h} h ${m} min`;
+        }
+
+        function calculFeuillard() {
+            const poidsMetreG = parseFloat(document.getElementById('poidsMetre').value);
+            const poidsRouleau = parseFloat(document.getElementById('poidsRouleau').value);
+            const vitesse = parseFloat(document.getElementById('vitesseFeuillard').value);
+
+            const out = document.getElementById('resultFeuillard');
+            if (poidsMetreG > 0 && poidsRouleau > 0 && vitesse > 0) {
+                const poidsMetreKg = poidsMetreG / 1000; // g/m -> kg/m
+                const duree = poidsRouleau / (poidsMetreKg * vitesse);
+                out.innerText = `Durée : ${toHMS(duree)}`; // only h:min
+            } else {
+                out.innerText = "Veuillez remplir tous les champs correctement.";
+            }
+        }
+
+        function calculVitesseFeuillard() {
+            const poidsMetreG = parseFloat(document.getElementById('poidsMetre').value);
+            const poidsRouleau = parseFloat(document.getElementById('poidsRouleau').value);
+            const dureeCibleMin = parseFloat(document.getElementById('dureeCibleFeuillard').value);
+
+            const out = document.getElementById('resultVitesseFeuillard');
+            if (poidsMetreG > 0 && poidsRouleau > 0 && dureeCibleMin > 0) {
+                const poidsMetreKg = poidsMetreG / 1000;
+                const dureeCibleH = dureeCibleMin / 60;
+                const vitesse = poidsRouleau / (poidsMetreKg * dureeCibleH);
+                out.innerText = `Vitesse nécessaire : ${vitesse.toFixed(2)} m/h`;
+            } else {
+                out.innerText = "Veuillez remplir tous les champs correctement.";
+            }
+        }
+
+        function calculPieces() {
+            const nbPieces = parseFloat(document.getElementById('nbPieces').value);
+            const piecesParPas = parseFloat(document.getElementById('piecesParPas').value);
+            const taillePasMM = parseFloat(document.getElementById('taillePas').value);
+            const vitesse = parseFloat(document.getElementById('vitessePieces').value);
+
+            const out = document.getElementById('resultPieces');
+            if (nbPieces > 0 && piecesParPas > 0 && taillePasMM > 0 && vitesse > 0) {
+                const taillePasM = taillePasMM / 1000; // mm -> m
+                const duree = (nbPieces * taillePasM) / (piecesParPas * vitesse);
+                out.innerText = `Durée : ${toHMS(duree)}`; // only h:min
+            } else {
+                out.innerText = "Veuillez remplir tous les champs correctement.";
+            }
+        }
+
+        function calculVitessePieces() {
+            const nbPieces = parseFloat(document.getElementById('nbPieces').value);
+            const piecesParPas = parseFloat(document.getElementById('piecesParPas').value);
+            const taillePasMM = parseFloat(document.getElementById('taillePas').value);
+            const dureeCibleMin = parseFloat(document.getElementById('dureeCiblePieces').value);
+
+            const out = document.getElementById('resultVitessePieces');
+            if (nbPieces > 0 && piecesParPas > 0 && taillePasMM > 0 && dureeCibleMin > 0) {
+                const taillePasM = taillePasMM / 1000;
+                const dureeCibleH = dureeCibleMin / 60;
+                const vitesse = (nbPieces * taillePasM) / (piecesParPas * dureeCibleH);
+                out.innerText = `Vitesse nécessaire : ${vitesse.toFixed(2)} m/h`;
+            } else {
+                out.innerText = "Veuillez remplir tous les champs correctement.";
+            }
+        }
+    </script>
+</body>
+</html>
