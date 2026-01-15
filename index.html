@@ -6,46 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calcul Durée Rouleau</title>
     <style>
-        
 :root{
-    /* Ajuste ici l'intensité du voile et du fond du formulaire */
-    --bg-overlay: 0.45;   /* 0 = pas de voile, 0.6 = plus sombre */
-    --card-bg: 0.92;      /* 1 = blanc opaque, 0.85 = un peu plus transparent */
+    --bg-overlay: 0.45;   /* voile sombre */
+    --card-bg: 0.92;      /* opacité du cartouche */
 }
 
 html, body {
     height: 100%;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0; /* <- important pour le fond plein écran */
-    background: #0b0b0b; /* couleur de secours */
-    /* Fond = image + voile sombre via dégradé */
-    background-image:
+body background-image:
         linear-gradient(rgba(0,0,0,var(--bg-overlay)), rgba(0,0,0,var(--bg-overlay))),
-        url('bg-pem.jpg'); /* <-- mets ton image dans le même dossier que index.html */
-    background-size: cover;         /* couvre tout l'écran */
-    background-position: center;    /* centre l'image */
-    background-attachment: fixed;   /* effet léger parallax sur desktop */
-    background-repeat: no-repeat;
-    padding: 20px; /* espace autour du container */
-}
-
-/* Cartouche du formulaire plus lisible sur fond photo */
-.container {
-    max-width: 560px;           /* un peu plus large pour respirer */
-    margin: 0 auto;
-    background: rgba(255,255,255,var(--card-bg));  /* blanc semi-opaque */
-    padding: 22px;
-    border-radius: 10px;
-    box-shadow: 0 10px 28px rgba(0,0,0,0.35);      /* ombre marquée pour le contraste */
-    backdrop-filter: blur(2px); /* bonus si dispo : floute légèrement le fond derrière */
+        url('bg-pem.jpg'); /* image dans le même dossier */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+   28px rgba(0,0,0,0.35);
+    backdrop-filter: blur(2px);
 }
 
 h1 {
     text-align: center;
-    color: #fff;                /* titre principal sur fond sombre = blanc */
+    color: #fff;
     text-shadow: 0 2px 6px rgba(0,0,0,0.5);
     margin: 10px 0 18px;
 }
@@ -85,7 +67,6 @@ button:hover { background: #0056b3; }
 
 .section { display: none; }
 
-/* Séparateur visuel pour la partie "Calcul vitesse" */
 .sub-section {
     margin-top: 28px;
     padding-top: 14px;
@@ -96,13 +77,10 @@ button:hover { background: #0056b3; }
     color: #007bff;
 }
 
-/* Pied de page en blanc discret sur fond photo */
-
-
 .footer {
-    margin: 24px auto 0;       /* centre horizontalement */
-    display: block;            /* s'assure que l'élément est en bloc */
-    width: fit-content;        /* largeur adaptée au texte */
+    margin: 24px auto 0;
+    display: block;
+    width: fit-content;
     font-size: 14px;
     color: #fff;
     font-weight: bold;
@@ -113,15 +91,10 @@ button:hover { background: #0056b3; }
     border-radius: 6px;
 }
 
-
-
-/* Petits écrans : adoucir les effets, resserrer le layout */
 @media (max-width: 480px) {
     body { padding: 12px; background-attachment: scroll; }
     .container { padding: 16px; }
 }
-``
-
     </style>
 </head>
 <body>
@@ -134,53 +107,51 @@ button:hover { background: #0056b3; }
             <option value="pieces">Pièces Découpées</option>
         </select>
 
-        
-<!-- Section Feuillard -->
-<div id="sectionFeuillard" class="section">
-    <h2>Feuillard</h2>
-    <label>Poids du rouleau (kg):</label>
-    <input type="number" id="poidsRouleau" step="10" placeholder="ex. 750">
-    <label>Poids par mètre (g/m):</label>
-    <input type="number" id="poidsMetre" step="1" placeholder="ex. 2350">
-    <label>Vitesse (m/h):</label>
-    <input type="number" id="vitesseFeuillard" step="5" placeholder="ex. 120">
-    <button onclick="calculFeuillard()">Calculer Durée</button>
-    <div class="result" id="resultFeuillard"></div>
+        <!-- Section Feuillard -->
+        <div id="sectionFeuillard" class="section">
+            <h2>Feuillard</h2>
+            <label>Poids du rouleau (kg):</label>
+            <input type="number" id="poidsRouleau" step="10" placeholder="ex. 750">
+            <label>Poids par mètre (g/m):</label>
+            <input type="number" id="poidsMetre" step="1" placeholder="ex. 2350">
+            <label>Vitesse (m/h):</label>
+            <input type="number" id="vitesseFeuillard" step="5" placeholder="ex. 120">
+            <button onclick="calculFeuillard()">Calculer Durée</button>
+            <div class="result" id="resultFeuillard"></div>
 
-    <div class="sub-section">
-        <h3>Calculer la vitesse pour une durée cible</h3>
-        <label>Durée cible (minutes):</label>
-        <input type="number" id="dureeCibleFeuillard" placeholder="ex. 90">
-        <button onclick="calculVitesseFeuillard()">Calculer Vitesse</button>
-        <div class="result" id="resultVitesseFeuillard"></div>
-    </div>
-</div>
+            <div class="sub-section">
+                <h3>Calculer la vitesse pour une durée cible</h3>
+                <label>Durée cible (minutes):</label>
+                <input type="number" id="dureeCibleFeuillard" placeholder="ex. 90">
+                <button onclick="calculVitesseFeuillard()">Calculer Vitesse</button>
+                <div class="result" id="resultVitesseFeuillard"></div>
+            </div>
+        </div>
 
-<!-- Section Pièces -->
-<div id="sectionPieces" class="section">
-    <h2>Pièces Découpées</h2>
-    <label>Nombre total de pièces:</label>
-    <input type="number" id="nbPieces" step="1000" placeholder="ex. 25000">
-    <label>Nombre de pièces par pas:</label>
-    <input type="number" id="piecesParPas" step="1" value="1" placeholder="ex. 4">
-    <label>Taille du pas (mm):</label>
-    <input type="number" id="taillePas" step="1" placeholder="ex. 35">
-    <label>Vitesse (m/h):</label>
-    <input type="number" id="vitessePieces" step="5" placeholder="ex. 90">
-    <button onclick="calculPieces()">Calculer Durée</button>
-    <div class="result" id="resultPieces"></div>
+        <!-- Section Pièces -->
+        <div id="sectionPieces" class="section">
+            <h2>Pièces Découpées</h2>
+            <label>Nombre total de pièces:</label>
+            <input type="number" id="nbPieces" step="1000" placeholder="ex. 25000">
+            <label>Nombre de pièces par pas:</label>
+            <input type="number" id="piecesParPas" step="1" value="1" placeholder="ex. 4">
+            <label>Taille du pas (mm):</label>
+            <input type="number" id="taillePas" step="1" placeholder="ex. 35">
+            <label>Vitesse (m/h):</label>
+            <input type="number" id="vitessePieces" step="5" placeholder="ex. 90">
+            <button onclick="calculPieces()">Calculer Durée</button>
+            <div class="result" id="resultPieces"></div>
 
-    <div class="sub-section">
-        <h3>Calculer la vitesse pour une durée cible</h3>
-        <label>Durée cible (minutes):</label>
-        <input type="number" id="dureeCiblePieces" placeholder="ex. 120">
-        <button onclick="calculVitessePieces()">Calculer Vitesse</button>
-        <div class="result" id="resultVitessePieces"></div>
-    </div>
-</div>
+            <div class="sub-section">
+                <h3>Calculer la vitesse pour une durée cible</h3>
+                <label>Durée cible (minutes):</label>
+                <input type="number" id="dureeCiblePieces" placeholder="ex. 120">
+                <button onclick="calculVitessePieces()">Calculer Vitesse</button>
+                <div class="result" id="resultVitessePieces"></div>
+            </div>
+        </div>
 
-
-        <div class="footer">outil libre d'accès - C.Duffner - AST PEM - V1.1 - 15/01/26</div>
+        <div class="footer">outil libre d'accès - C.Duffner - AST PEM - V1.2 - 15/01/26</div>
     </div>
 
     <script>
