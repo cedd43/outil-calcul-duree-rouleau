@@ -7,8 +7,8 @@
 <title>Calcul Durée Rouleau</title>
 
 <!-- PWA -->
-manifest.webmanifest?v=5
-logo-192.png
+<link rel="manifest" href="manifest.webmanifest?v=5">
+<link rel="apple-touch-icon" href="logo-192.png">
 <meta name="theme-color" content="#0b0b0b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -42,7 +42,7 @@ input,select{
     width:100%; padding:8px; margin-top:5px; border-radius:6px; border:1px solid #cfd4dc;
 }
 
-/* Placeholders rétablis */
+/* Placeholders visibles */
 input::placeholder { color:#999; font-style:italic; }
 
 button{
@@ -63,7 +63,7 @@ button{
 .section{ display:none; }
 .inputs.collapsed { display:none !important; }
 
-/* Mode big timer */
+/* Mode big timer (accueil avec timer en cours) */
 .big-container{
     margin-top:20px;
     background:rgba(0,0,0,0.65);
@@ -107,108 +107,100 @@ button{
 
 <div class="container" id="mainContainer">
 
-    <!-- Sélecteur visible en permanence -->
-    <div class="big-wrap">
-      <label>Choisissez le type :</label>
-      <select id="typeChoix" onchange="onTypeChange()">
-          <option value="">-- Sélectionnez --</option>
-          <option value="feuillard">Feuillard</option>
-          <option value="pieces">Pièces découpées</option>
-      </select>
+  <!-- Sélecteur (toujours visible pour sortir du big timer) -->
+  <label>Choisissez le type :</label>
+  <select id="typeChoix" onchange="onTypeChange()">
+    <option value="">-- Sélectionnez --</option>
+    <option value="feuillard">Feuillard</option>
+    <option value="pieces">Pièces découpées</option>
+  </select>
+
+  <!-- UI Normale -->
+  <div id="normalUI">
+
+    <!-- FEUILLARD -->
+    <div id="sectionFeuillard" class="section">
+      <h2>Feuillard</h2>
+
+      <div class="inputs" id="inputsFeuillard">
+        <label>Poids du rouleau (kg):</label>
+        <input type="number" id="poidsRouleau" placeholder="ex : 1200" step="10">
+
+        <label>Poids par mètre (g/m):</label>
+        <input type="number" id="poidsMetre" placeholder="ex : 150" step="1">
+
+        <label>Vitesse (m/h):</label>
+        <input type="number" id="vitesseFeuillard" placeholder="ex : 200" step="5">
+
+        <button class="btn-primary" onclick="calculFeuillard()">Calculer la durée</button>
+        <div class="result" id="resultFeuillard"></div>
+      </div>
+
+      <div id="timeFeuillard" class="time-block" style="display:none;">
+        <div class="time-inline">
+          <label><b>Choisir l'heure de début (du rouleau)</b> :</label>
+          <input type="time" id="startTimeFeuillard">
+        </div>
+        <div class="or-sep">OU</div>
+        <button class="btn-start" onclick="departMaintenant('feuillard')">Départ rouleau</button>
+
+        <div class="countdown" id="countdownFeuillard"></div>
+        <div class="result" id="endTimeFeuillard"></div>
+      </div>
     </div>
 
-    <!-- UI Normale -->
-    <div id="normalUI">
+    <!-- PIECES -->
+    <div id="sectionPieces" class="section">
+      <h2>Pièces découpées</h2>
 
-        <!-- FEUILLARD -->
-        <div id="sectionFeuillard" class="section">
-            <h2>Feuillard</h2>
+      <div class="inputs" id="inputsPieces">
+        <label>Nombre total de pièces :</label>
+        <input type="number" id="nbPieces" placeholder="ex : 35000" step="1000">
 
-            <div class="inputs" id="inputsFeuillard">
-              <label>Poids du rouleau (kg):</label>
-              <input type="number" id="poidsRouleau" placeholder="ex : 1200" step="10">
+        <label>Nombre de pièces par pas :</label>
+        <input type="number" id="piecesParPas" placeholder="ex : 1" step="1">
 
-              <label>Poids par mètre (g/m):</label>
-              <input type="number" id="poidsMetre" placeholder="ex : 150" step="1">
+        <label>Taille du pas (mm) :</label>
+        <input type="number" id="taillePas" placeholder="ex : 24" step="1">
 
-              <label>Vitesse (m/h):</label>
-              <input type="number" id="vitesseFeuillard" placeholder="ex : 200" step="5">
+        <label>Vitesse (m/h) :</label>
+        <input type="number" id="vitessePieces" placeholder="ex : 180" step="5">
 
-              <button class="btn-primary" onclick="calculFeuillard()">Calculer la durée</button>
-              <div class="result" id="resultFeuillard"></div>
-            </div>
+        <button class="btn-primary" onclick="calculPieces()">Calculer la durée</button>
+        <div class="result" id="resultPieces"></div>
+      </div>
 
-            <div id="timeFeuillard" class="time-block" style="display:none;">
-              <div class="time-inline">
-                <label><b>Choisir l'heure de début (du rouleau)</b> :</label>
-                <input type="time" id="startTimeFeuillard">
-              </div>
-              <div class="or-sep">OU</div>
-
-              <button class="btn-start" onclick="departMaintenant('feuillard')">
-                Départ rouleau
-              </button>
-
-              <div class="countdown" id="countdownFeuillard"></div>
-              <div class="result" id="endTimeFeuillard"></div>
-            </div>
+      <div id="timePieces" class="time-block" style="display:none;">
+        <div class="time-inline">
+          <label><b>Choisir l'heure de début (de la bobine)</b> :</label>
+          <input type="time" id="startTimePieces">
         </div>
+        <div class="or-sep">OU</div>
+        <button class="btn-start" onclick="departMaintenant('pieces')">Départ bobine</button>
 
-        <!-- PIECES -->
-        <div id="sectionPieces" class="section">
-            <h2>Pièces découpées</h2>
-
-            <div class="inputs" id="inputsPieces">
-              <label>Nombre total de pièces :</label>
-              <input type="number" id="nbPieces" placeholder="ex : 35000" step="1000">
-
-              <label>Nombre de pièces par pas :</label>
-              <input type="number" id="piecesParPas" placeholder="ex : 1" step="1">
-
-              <label>Taille du pas (mm) :</label>
-              <input type="number" id="taillePas" placeholder="ex : 24" step="1">
-
-              <label>Vitesse (m/h) :</label>
-              <input type="number" id="vitessePieces" placeholder="ex : 180" step="5">
-
-              <button class="btn-primary" onclick="calculPieces()">Calculer la durée</button>
-              <div class="result" id="resultPieces"></div>
-            </div>
-
-            <div id="timePieces" class="time-block" style="display:none;">
-              <div class="time-inline">
-                <label><b>Choisir l'heure de début (de la bobine)</b> :</label>
-                <input type="time" id="startTimePieces">
-              </div>
-
-              <div class="or-sep">OU</div>
-              <button class="btn-start" onclick="departMaintenant('pieces')">
-                Départ bobine
-              </button>
-
-              <div class="countdown" id="countdownPieces"></div>
-              <div class="result" id="endTimePieces"></div>
-            </div>
-        </div>
-
-        <button class="btn-reset" onclick="resetAll()">Réinitialiser</button>
-
-        <p class="help-note">
-            Pour une utilisation sur téléphone :<br>
-            • <b>Android (Chrome)</b> → Installer l'app (Ajouter à l’écran d’accueil)<br>
-            • <b>iPhone (Safari)</b> → Partager → <b>Sur l’écran d’accueil</b>
-        </p>
+        <div class="countdown" id="countdownPieces"></div>
+        <div class="result" id="endTimePieces"></div>
+      </div>
     </div>
 
-    <!-- BIG TIMER -->
-    <div id="bigTimerUI" style="display:none;">
-        <div class="big-container">
-            <div id="bigTimerText" class="big-timer"></div>
-            <button id="btnNouveau" class="big-btn"></button>
-        </div>
-    </div>
+    <button class="btn-reset" onclick="resetAll()">Réinitialiser</button>
 
-    <div class="footer">outil libre d'accès – C.Duffner – AST PEM – V2.3 – 17/01/26</div>
+    <p class="help-note">
+      Pour une utilisation sur téléphone :<br>
+      • <b>Android (Chrome)</b> → Installer l'app (Ajouter à l’écran d’accueil)<br>
+      • <b>iPhone (Safari)</b> → Partager → <b>Sur l’écran d’accueil</b>
+    </p>
+  </div>
+
+  <!-- BIG TIMER (accueil si timer actif) -->
+  <div id="bigTimerUI" style="display:none;">
+    <div class="big-container">
+      <div id="bigTimerText" class="big-timer"></div>
+      <button id="btnNouveau" class="big-btn"></button>
+    </div>
+  </div>
+
+  <div class="footer">outil libre d'accès – C.Duffner – AST PEM – V2.4 – 17/01/26</div>
 </div>
 
 <script>
@@ -223,13 +215,33 @@ let timers = {
 };
 
 //========================================================
-// CHARGEMENT INITIAL
+// PERSISTENCE
+//========================================================
+function saveState(){
+  const st = {
+    inputs:{
+      typeChoix: document.getElementById('typeChoix').value,
+      poidsRouleau: (document.getElementById('poidsRouleau')||{}).value || "",
+      poidsMetre: (document.getElementById('poidsMetre')||{}).value || "",
+      vitesseFeuillard: (document.getElementById('vitesseFeuillard')||{}).value || "",
+      nbPieces: (document.getElementById('nbPieces')||{}).value || "",
+      piecesParPas: (document.getElementById('piecesParPas')||{}).value || "",
+      taillePas: (document.getElementById('taillePas')||{}).value || "",
+      vitessePieces: (document.getElementById('vitessePieces')||{}).value || "",
+      startTimeFeuillard: (document.getElementById('startTimeFeuillard')||{}).value || "",
+      startTimePieces: (document.getElementById('startTimePieces')||{}).value || ""
+    },
+    timers
+  };
+  localStorage.setItem('outilDuree', JSON.stringify(st));
+}
+
 //========================================================
 function loadState(){
   const raw = localStorage.getItem('outilDuree');
   const typeSelect = document.getElementById('typeChoix');
 
-  // ---- 1) Première ouverture : tout vide ----
+  // 1) Première ouverture : tout vide
   if(!raw){
     typeSelect.value = "";
     hideAllSections();
@@ -238,20 +250,18 @@ function loadState(){
 
   const st = JSON.parse(raw);
 
-  // ---- restaurer les entrées (sans forcer type) ----
+  // Restaurer les champs (sans forcer le type)
   if(st.inputs){
     Object.keys(st.inputs).forEach(id=>{
       if(document.getElementById(id))
         document.getElementById(id).value = st.inputs[id];
     });
   }
-
   timers = st.timers || timers;
 
-  // ---- 2) Timer actif ? ----
+  // 2) Timer actif ?
   const now = new Date();
   let activeType = null;
-
   ['feuillard','pieces'].forEach(t=>{
     if(timers[t] && timers[t].end){
       const end = new Date(timers[t].end);
@@ -264,14 +274,14 @@ function loadState(){
     }
   });
 
-  // ---- 3) Aucun timer → retour sur "Sélectionnez" ----
+  // 3) Aucun timer → "Sélectionnez" et rien à l'écran
   if(!activeType){
     typeSelect.value = "";
     hideAllSections();
     return;
   }
 
-  // ---- 4) Timer actif → restaurer type & big timer ----
+  // 4) Timer actif → big timer + minuterie en cours
   typeSelect.value = activeType;
   showTimerBlock(activeType);
   startCountdown(activeType, timers[activeType].end);
@@ -292,16 +302,24 @@ function hideAllSections(){
   document.getElementById('inputsPieces').classList.add('collapsed');
 }
 
+// Sélection d'un type (sortie big timer si besoin)
 function onTypeChange(){
   exitBigTimerMode();
-
   const type = document.getElementById('typeChoix').value;
 
   if(type === ""){
     hideAllSections();
     return;
   }
+
   toggleSections();
+
+  // Si un timer est déjà en cours pour ce type → l’afficher en taille normale
+  if (timers[type] && timers[type].end) {
+    showTimerBlock(type);
+    // Si l'intervalle n'existe plus (ex: iOS a gelé), on relance
+    if (!timers[type].interval) startCountdown(type, timers[type].end);
+  }
   saveState();
 }
 
@@ -311,10 +329,9 @@ function toggleSections(){
   document.getElementById('sectionFeuillard').style.display = (c==='feuillard')?'block':'none';
   document.getElementById('sectionPieces').style.display    = (c==='pieces')?'block':'none';
 
-  if(c==='feuillard')
-    document.getElementById('inputsFeuillard').classList.remove('collapsed');
-  if(c==='pieces')
-    document.getElementById('inputsPieces').classList.remove('collapsed');
+  // Afficher les inputs (les valeurs mémorisées, si présentes, restent)
+  if(c==='feuillard') document.getElementById('inputsFeuillard').classList.remove('collapsed');
+  if(c==='pieces')    document.getElementById('inputsPieces').classList.remove('collapsed');
 }
 
 function enterBigTimerMode(type){
@@ -327,11 +344,11 @@ function enterBigTimerMode(type){
   const btn = document.getElementById('btnNouveau');
   btn.textContent =
     (type==='feuillard')
-    ? `Lancer un nouveau rouleau de ${h}h ${m}min`
-    : `Lancer une nouvelle bobine de ${h}h ${m}min`;
+      ? `Lancer un nouveau rouleau de ${h}h ${m}min`
+      : `Lancer une nouvelle bobine de ${h}h ${m}min`;
 
   btn.onclick = ()=>{
-    // Reset complet, pas de reload instantané
+    // Reset complet SANS rechargement brutal
     localStorage.removeItem('outilDuree');
     timers = {
       feuillard:{end:null,durationMin:null,interval:null},
@@ -351,8 +368,8 @@ function exitBigTimerMode(){
 
 function updateBigTimerFrom(type){
   const elSmall = document.getElementById(type==='feuillard'?'countdownFeuillard':'countdownPieces');
-  const elBig = document.getElementById('bigTimerText');
-  if(elSmall && elBig && elSmall.textContent){
+  const elBig   = document.getElementById('bigTimerText');
+  if (elSmall && elBig && elSmall.textContent){
     elBig.textContent = elSmall.textContent.replace(/^Temps restant\s*:\s*/,'');
   }
 }
@@ -364,8 +381,7 @@ function pad2(n){ return n.toString().padStart(2,'0'); }
 function nowHHMM(){ const d=new Date(); return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
 function parseTimeToDate(hhmm){
   const [h,m]=hhmm.split(':').map(Number);
-  const d=new Date(); d.setHours(h,m,0,0);
-  return d;
+  const d=new Date(); d.setHours(h,m,0,0); return d;
 }
 function addMin(date,min){ return new Date(date.getTime()+min*60000); }
 function formatHHMM(d){ return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
@@ -396,10 +412,8 @@ function startCountdown(t,end){
       clearInterval(timers[t].interval);
       el.textContent = 'Terminé.';
     }
-
     saveState();
   }
-
   tick();
   timers[t].interval = setInterval(tick,1000);
 }
@@ -552,5 +566,4 @@ if('serviceWorker' in navigator){
 </script>
 
 </body>
-</html>
-
+</
