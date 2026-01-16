@@ -211,11 +211,23 @@ function loadState(){
 }
 
 // ===== UI =====
+
 function toggleSections(){
   const c = typeChoix.value;
+
+  // afficher/masquer les sections
   document.getElementById('sectionFeuillard').style.display = (c==='feuillard')?'block':'none';
   document.getElementById('sectionPieces').style.display    = (c==='pieces')?'block':'none';
+
+  // 🔥 Correction : si on change de type, les inputs doivent TOUJOURS réapparaître
+  if (c === 'feuillard') {
+      document.getElementById('inputsFeuillard').classList.remove('collapsed');
+  }
+  if (c === 'pieces') {
+      document.getElementById('inputsPieces').classList.remove('collapsed');
+  }
 }
+
 function pad2(n){ return n.toString().padStart(2,'0'); }
 function nowHHMM(){ const d=new Date(); return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
 function parseTimeToDate(hhmm){ const [h,m]=hhmm.split(':').map(Number); const d=new Date(); d.setHours(h,m,0,0); return d; }
