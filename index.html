@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Calcul Durée Rouleau</title>
 
-<!-- PWA -->
+<!-- PWA (si manifest.webmanifest + sw.js présents à la racine) -->
 <link rel="manifest" href="manifest.webmanifest" />
 <meta name="theme-color" content="#0b0b0b" />
 <link rel="apple-touch-icon" href="logo-192.png" />
@@ -136,7 +136,7 @@ button {
         <input type="number" id="vitesseFeuillard" step="5" placeholder="ex. 120">
 
         <div class="button-row">
-            <button class="btn-primary" onclick="calculFeuillard()">Calculer Durée</button>
+            <button class="btn-primary" onclick="calculFeuillard()">Calculer la durée</button>
         </div>
         <div class="result" id="resultFeuillard"></div>
 
@@ -148,7 +148,7 @@ button {
           </div>
 
           <div class="button-row" style="margin-top:8px;">
-            <button class="btn-start" onclick="lancerTimerMaintenant('feuillard')">LANCER LE TIMER</button>
+            <button class="btn-start" onclick="departMaintenant('feuillard')">Départ rouleau</button>
           </div>
 
           <div class="countdown" id="countdownFeuillard"></div>
@@ -195,7 +195,7 @@ button {
         <input type="number" id="vitessePieces" step="5" placeholder="ex. 90">
 
         <div class="button-row">
-            <button class="btn-primary" onclick="calculPieces()">Calculer Durée</button>
+            <button class="btn-primary" onclick="calculPieces()">Calculer la durée</button>
         </div>
         <div class="result" id="resultPieces"></div>
 
@@ -207,7 +207,7 @@ button {
           </div>
 
           <div class="button-row" style="margin-top:8px;">
-            <button class="btn-start" onclick="lancerTimerMaintenant('pieces')">LANCER LE TIMER</button>
+            <button class="btn-start" onclick="departMaintenant('pieces')">Départ bobine</button>
           </div>
 
           <div class="countdown" id="countdownPieces"></div>
@@ -242,11 +242,11 @@ button {
         <button class="btn-reset" onclick="resetFields()">Réinitialiser tous les champs</button>
     </div>
 
-    <div class="footer">outil libre d'accès - C.Duffner - AST PEM - V1.7 - 15/01/26</div>
+    <div class="footer">outil libre d'accès - C.Duffner - AST PEM - V1.8 - 15/01/26</div>
 </div>
 
 <script>
-/* ==== Utilitaires affichage ==== */
+/* ==== Utilitaires ==== */
 function toggleSections() {
     const choix = document.getElementById('typeChoix').value;
     document.getElementById('sectionFeuillard').style.display = (choix === 'feuillard') ? 'block' : 'none';
@@ -258,6 +258,10 @@ function toHMS(hours) {
     const h = Math.floor(totalMinutes / 60);
     const m = totalMinutes % 60;
     return `${h} h ${m} min`;
+}
+function nowHHMM(){
+    const now = new Date();
+    return `${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
 }
 function parseTimeToToday(timeStr){
     const [h,m] = (timeStr || '00:00').split(':').map(v=>parseInt(v||'0',10));
@@ -276,7 +280,7 @@ function showSuccess(element, message) {
     element.innerText = message;
 }
 
-/* ==== Timers et compte à rebours ==== */
+/* ==== Timers & countdown ==== */
 let timers = {
   feuillard: { timeoutId: null, intervalId: null, end: null, durationMin: null },
   pieces:    { timeoutId: null, intervalId: null, end: null, durationMin: null }
@@ -334,7 +338,6 @@ Gardez ensuite l’app ouverte."
     }
     return true;
 }
-
 async function notify(title, options = {}){
     try {
         const reg = await navigator.serviceWorker.getRegistration();
@@ -344,7 +347,6 @@ async function notify(title, options = {}){
     } catch(e) {}
     try { return new Notification(title, options); } catch(e) {}
 }
-
 function beep(){
     try{
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -361,14 +363,14 @@ function beep(){
 }
 function vibrate(ms){ if (navigator.vibrate) navigator.vibrate(ms); }
 
-/* ==== Rappel 5 min avant la fin ==== */
+/* ==== Rappel -5 min ==== */
 async function activerRappel(which){
     const ok = await ensureNotificationPermission();
     if (!ok) return;
 
     const t = timers[which];
     if (!t || !t.end) {
-        alert("Veuillez d'abord lancer le timer (ou saisir l'heure de début).");
+        alert("Veuillez d'abord démarrer le timer (ou saisir l'heure de début puis valider).");
         return;
     }
     const remindAt = new Date(t.end.getTime() - 5*60000); // -5 min
@@ -389,32 +391,31 @@ async function activerRappel(which){
     alert("Rappel programmé 5 minutes avant la fin (tant que l’app reste ouverte).");
 }
 
-/* ==== Lancer le timer (B1) ==== */
-function lancerTimerMaintenant(which){
-    // B1 : place l'heure actuelle dans le champ, puis démarre
-    const now = new Date();
-    const hhmm = `${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+/* ==== Démarrage immédiat ==== */
+function departMaintenant(which){
+    // Met l'heure actuelle dans le champ puis démarre le timer
+    const hhmm = nowHHMM();
     if (which === 'feuillard') {
         const input = document.getElementById('startTimeFeuillard');
         input.value = hhmm;
-        updateTimerFromStart('feuillard');
+        validerHeureDebut('feuillard');
     } else {
         const input = document.getElementById('startTimePieces');
         input.value = hhmm;
-        updateTimerFromStart('pieces');
+        validerHeureDebut('pieces');
     }
 }
 
-/* ==== Recalcule fin & relance le compte à rebours depuis une heure saisie ==== */
-function updateTimerFromStart(which){
+/* ==== Validation / relance du timer depuis l'heure saisie ==== */
+function validerHeureDebut(which){
     const dur = timers[which].durationMin;
     if (!dur) {
-        alert("Calculez d’abord la durée avant de lancer le timer.");
+        alert("Calculez d’abord la durée avant de démarrer le timer.");
         return;
     }
     if (which === 'feuillard') {
         const startInput = document.getElementById('startTimeFeuillard');
-        if (!startInput.value) { alert("Veuillez saisir l'heure de début ou utiliser LANCER LE TIMER."); return; }
+        if (!startInput.value) { alert("Veuillez saisir l'heure de début ou utiliser Départ rouleau."); return; }
         const s = parseTimeToToday(startInput.value);
         const e = addMinutes(s, dur);
         document.getElementById('endTimeFeuillard').innerText =
@@ -422,12 +423,38 @@ function updateTimerFromStart(which){
         startCountdown('feuillard', e);
     } else {
         const startInput = document.getElementById('startTimePieces');
-        if (!startInput.value) { alert("Veuillez saisir l'heure de début ou utiliser LANCER LE TIMER."); return; }
+        if (!startInput.value) { alert("Veuillez saisir l'heure de début ou utiliser Départ bobine."); return; }
         const s = parseTimeToToday(startInput.value);
         const e = addMinutes(s, dur);
         document.getElementById('endTimePieces').innerText =
             `Si la bobine commence à ${formatHHMM(s)}, elle terminera à ${formatHHMM(e)}.`;
         startCountdown('pieces', e);
+    }
+}
+
+/* ==== Prévisualisation de fin (sans démarrer le timer) ==== */
+function previewFinSansTimer(which){
+    const dur = timers[which].durationMin;
+    if (!dur) return;
+    if (which === 'feuillard') {
+        const input = document.getElementById('startTimeFeuillard');
+        if (!input.value) return;
+        const s = parseTimeToToday(input.value);
+        const e = addMinutes(s, dur);
+        document.getElementById('endTimeFeuillard').innerText =
+            `Si le rouleau commence à ${formatHHMM(s)}, il terminera à ${formatHHMM(e)}.`;
+        // ne lance pas le compte à rebours
+        clearTimers('feuillard');
+        document.getElementById('countdownFeuillard').textContent = '';
+    } else {
+        const input = document.getElementById('startTimePieces');
+        if (!input.value) return;
+        const s = parseTimeToToday(input.value);
+        const e = addMinutes(s, dur);
+        document.getElementById('endTimePieces').innerText =
+            `Si la bobine commence à ${formatHHMM(s)}, elle terminera à ${formatHHMM(e)}.`;
+        clearTimers('pieces');
+        document.getElementById('countdownPieces').textContent = '';
     }
 }
 
@@ -447,14 +474,14 @@ function calculFeuillard() {
         const block = document.getElementById('timeFeuillard');
         block.style.display = 'block';
 
+        // Stocker la durée et préparer l'heure de début = maintenant (prévisualisation)
         timers.feuillard.durationMin = dureeMin;
-
-        // Recalcul automatique si l'heure de début est modifiée
         const startInput = document.getElementById('startTimeFeuillard');
-        startInput.oninput = () => updateTimerFromStart('feuillard');
+        startInput.value = nowHHMM();        // on met l'heure actuelle
+        previewFinSansTimer('feuillard');    // calcul d'heure de fin sans démarrer
 
-        // Pas de départ automatique : l'opérateur choisit
-        // soit modifier l'heure, soit appuyer sur LANCER LE TIMER
+        // Si l'heure est modifiée manuellement -> démarrer/relancer le timer
+        startInput.oninput = () => validerHeureDebut('feuillard');
     } else {
         showError(out, "Veuillez remplir tous les champs correctement.");
         document.getElementById('timeFeuillard').style.display = 'none';
@@ -494,14 +521,14 @@ function calculPieces() {
         const block = document.getElementById('timePieces');
         block.style.display = 'block';
 
+        // Stocker la durée et préparer l'heure de début = maintenant (prévisualisation)
         timers.pieces.durationMin = dureeMin;
-
-        // Recalcul automatique si l'heure de début est modifiée
         const startInput = document.getElementById('startTimePieces');
-        startInput.oninput = () => updateTimerFromStart('pieces');
+        startInput.value = nowHHMM();
+        previewFinSansTimer('pieces');
 
-        // Pas de départ automatique : l'opérateur choisit
-        // soit modifier l'heure, soit appuyer sur LANCER LE TIMER
+        // Si l'heure est modifiée manuellement -> démarrer/relancer le timer
+        startInput.oninput = () => validerHeureDebut('pieces');
     } else {
         showError(out, "Veuillez remplir tous les champs correctement.");
         document.getElementById('timePieces').style.display = 'none';
@@ -536,7 +563,7 @@ function resetFields() {
     });
 }
 
-/* ==== Enregistrement SW (PWA) ==== */
+/* ==== Enregistrement SW (PWA) si présent ==== */
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').catch(console.error);
@@ -550,4 +577,3 @@ function vibrate(ms){ if(navigator.vibrate) navigator.vibrate(ms); }
 </script>
 </body>
 </html>
-``
