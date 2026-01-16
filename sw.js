@@ -1,47 +1,6 @@
-
-// sw.js (v3) - cache bust + immediate activation
-const SW_VERSION = 'v3';
-const CACHE = `outil-duree-${SW_VERSION}`;
-const ASSETS = [
-  './',
-  './index.html',
-  './manifest.webmanifest?v=3',
-  './bg-pem.jpg',
-  './logo-192.png',
-  './logo-512.png'
-];
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then(cache => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting())
-  );
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    ).then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener('fetch', (event) => {
-  const req = event.request;
-  if (req.method !== 'GET') return;
-  event.respondWith(
-    caches.match(req).then(cached => {
-      const fetchPromise = fetch(req)
-        .then(netRes => {
-          if (netRes && netRes.status === 200 && netRes.type === 'basic') {
-            const copy = netRes.clone();
-            caches.open(CACHE).then(c => c.put(req, copy));
-          }
-          return netRes;
-        })
-        .catch(() => cached);
-      return cached || fetchPromise;
-    })
-  );
-});
+const SW_VERSION='v4';
+const CACHE=`outil-duree-${SW_VERSION}`;
+const ASSETS=['./','./index.html','./manifest.webmanifest?v=4','./bg-pem.jpg','./logo-192.png','./logo-512.png'];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim()));});
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return; e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(net=>{if(net&&net.status===200){let clone=net.clone(); caches.open(CACHE).then(c=>c.put(e.request,clone));}return net;}).catch(()=>r)));});
