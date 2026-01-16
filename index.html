@@ -552,12 +552,12 @@ function resetAll(){
 window.addEventListener('load', loadState);
 
 //========================================================
-// SW v10
+// SW v11
 //========================================================
 if('serviceWorker' in navigator){
   window.addEventListener('load', async () => {
     try {
-      const reg = await navigator.serviceWorker.register('./sw.js?v=10');
+      const reg = await navigator.serviceWorker.register('./sw.js?v=11');
       reg.addEventListener('updatefound', () => {
         const nw = reg.installing; if(!nw) return;
         nw.addEventListener('statechange', () => {
