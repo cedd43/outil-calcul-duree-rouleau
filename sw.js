@@ -1,5 +1,5 @@
 
-const CACHE = "outil-duree-v2";
+const CACHE = "outil-duree-v3";
 const ASSETS = [
   "./",
   "index.html",
