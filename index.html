@@ -7,8 +7,8 @@
 <title>Calcul Durée Rouleau</title>
 
 <!-- PWA -->
-<link rel="manifest" href="manifest.webmanifest?v=5">
-<link rel="apple-touch-icon" href="logo-192.png">
+manifest.webmanifest?v=5
+logo-192.png
 <meta name="theme-color" content="#0b0b0b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -36,55 +36,66 @@ body{
     padding:22px; border-radius:10px; box-shadow:0 10px 28px rgba(0,0,0,0.35); backdrop-filter:blur(2px);
 }
 h1{ text-align:center; color:white; text-shadow:0 2px 6px rgba(0,0,0,0.6); }
+
 label{ display:block; margin-top:10px; color:#222 }
-input,select{ width:100%; padding:8px; margin-top:5px; border-radius:6px; border:1px solid #cfd4dc; }
-button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; font-weight:bold; cursor:pointer; margin-top:14px; }
+input,select{
+    width:100%; padding:8px; margin-top:5px; border-radius:6px; border:1px solid #cfd4dc;
+}
+
+/* Placeholders rétablis */
+input::placeholder { color:#999; font-style:italic; }
+
+button{
+    padding:11px; width:100%; border:none; border-radius:6px;
+    color:white; font-weight:bold; cursor:pointer; margin-top:14px;
+}
 .btn-primary{ background:var(--primary); }
 .btn-primary:hover{ background:#0056b3; }
 .btn-start{ background:var(--start); font-size:1.05rem; }
 .btn-start:hover{ background:var(--start-hover); }
 .btn-reset{ background:#6c757d; }
 .btn-reset:hover{ background:#555; }
-.result{ margin-top:12px; font-weight:bold; }
-.result.success{ color:var(--success); }
-.error{ color:#d93025; font-weight:bold; }
-.section{ display:none; }
-.inputs.collapsed{ display:none !important; }
 
-/* Timer « page d’accueil » (mode A) */
-.big-wrap {
-    margin-top: 6px;
+.result{ margin-top:12px; font-weight:bold; }
+.error{ color:#d93025; font-weight:bold; }
+.result.success{ color:var(--success); }
+
+.section{ display:none; }
+.inputs.collapsed { display:none !important; }
+
+/* Mode big timer */
+.big-container{
+    margin-top:20px;
+    background:rgba(0,0,0,0.65);
+    padding:22px;
+    border-radius:12px;
 }
-.big-container {
-    margin-top: 18px;
-    background: rgba(0,0,0,0.65);
-    padding: 18px;
-    border-radius: 12px;
+.big-timer{
+    font-size:2.2rem;
+    color:#ff8c00;
+    font-weight:900;
+    text-align:center;
+    margin-bottom:18px;
 }
-.big-timer {
-    font-size: 2.2rem;
-    color: #ff8c00;
-    font-weight: 800;
-    text-align: center;
-    margin-top: 10px;
+.big-btn{
+    background:#ff8c00;
+    font-size:1.2rem;
+    margin-top:12px;
 }
-.big-btn {
-    background: #ff8c00;
-    font-size: 1.1rem;
-    margin-top: 18px;
-}
-.big-btn:hover { background:#e07a00; }
+.big-btn:hover{ background:#e07a00; }
 
 .or-sep{
-  text-align:center; font-weight:700; color:#666; margin:8px 0 -4px; letter-spacing:.5px;
+  text-align:center; font-weight:700; color:#666; margin:8px 0 -4px;
 }
 .or-sep::before, .or-sep::after{
-  content:""; display:inline-block; width:30%; height:1px; background:#bbb; vertical-align:middle; margin:0 8px;
+  content:""; display:inline-block; width:30%; height:1px; background:#bbb;
+  vertical-align:middle; margin:0 8px;
 }
 
 .help-note{ margin-top:12px; font-size:12px; color:#444; }
 .footer{
-    margin:24px auto 0; width:fit-content; color:white; font-size:14px; font-weight:bold;
+    margin:24px auto 0; width:fit-content;
+    color:white; font-size:14px; font-weight:bold;
     background:rgba(0,0,0,0.4); padding:8px 12px; border-radius:6px;
     text-shadow:0 2px 6px rgba(0,0,0,0.7);
 }
@@ -96,7 +107,7 @@ button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; f
 
 <div class="container" id="mainContainer">
 
-    <!-- Select visible en permanence pour sortir du « big timer » si besoin -->
+    <!-- Sélecteur visible en permanence -->
     <div class="big-wrap">
       <label>Choisissez le type :</label>
       <select id="typeChoix" onchange="onTypeChange()">
@@ -106,19 +117,22 @@ button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; f
       </select>
     </div>
 
-    <!-- UI normale -->
+    <!-- UI Normale -->
     <div id="normalUI">
+
         <!-- FEUILLARD -->
         <div id="sectionFeuillard" class="section">
             <h2>Feuillard</h2>
 
             <div class="inputs" id="inputsFeuillard">
               <label>Poids du rouleau (kg):</label>
-              <input type="number" id="poidsRouleau" step="10">
+              <input type="number" id="poidsRouleau" placeholder="ex : 1200" step="10">
+
               <label>Poids par mètre (g/m):</label>
-              <input type="number" id="poidsMetre" step="1">
+              <input type="number" id="poidsMetre" placeholder="ex : 150" step="1">
+
               <label>Vitesse (m/h):</label>
-              <input type="number" id="vitesseFeuillard" step="5">
+              <input type="number" id="vitesseFeuillard" placeholder="ex : 200" step="5">
 
               <button class="btn-primary" onclick="calculFeuillard()">Calculer la durée</button>
               <div class="result" id="resultFeuillard"></div>
@@ -130,7 +144,11 @@ button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; f
                 <input type="time" id="startTimeFeuillard">
               </div>
               <div class="or-sep">OU</div>
-              <button class="btn-start" onclick="departMaintenant('feuillard')">Départ rouleau</button>
+
+              <button class="btn-start" onclick="departMaintenant('feuillard')">
+                Départ rouleau
+              </button>
+
               <div class="countdown" id="countdownFeuillard"></div>
               <div class="result" id="endTimeFeuillard"></div>
             </div>
@@ -142,13 +160,16 @@ button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; f
 
             <div class="inputs" id="inputsPieces">
               <label>Nombre total de pièces :</label>
-              <input type="number" id="nbPieces" step="1000">
+              <input type="number" id="nbPieces" placeholder="ex : 35000" step="1000">
+
               <label>Nombre de pièces par pas :</label>
-              <input type="number" id="piecesParPas" step="1" value="1">
+              <input type="number" id="piecesParPas" placeholder="ex : 1" step="1">
+
               <label>Taille du pas (mm) :</label>
-              <input type="number" id="taillePas" step="1">
+              <input type="number" id="taillePas" placeholder="ex : 24" step="1">
+
               <label>Vitesse (m/h) :</label>
-              <input type="number" id="vitessePieces" step="5">
+              <input type="number" id="vitessePieces" placeholder="ex : 180" step="5">
 
               <button class="btn-primary" onclick="calculPieces()">Calculer la durée</button>
               <div class="result" id="resultPieces"></div>
@@ -159,8 +180,12 @@ button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; f
                 <label><b>Choisir l'heure de début (de la bobine)</b> :</label>
                 <input type="time" id="startTimePieces">
               </div>
+
               <div class="or-sep">OU</div>
-              <button class="btn-start" onclick="departMaintenant('pieces')">Départ bobine</button>
+              <button class="btn-start" onclick="departMaintenant('pieces')">
+                Départ bobine
+              </button>
+
               <div class="countdown" id="countdownPieces"></div>
               <div class="result" id="endTimePieces"></div>
             </div>
@@ -175,7 +200,7 @@ button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; f
         </p>
     </div>
 
-    <!-- UI spéciale quand timer actif à l’ouverture -->
+    <!-- BIG TIMER -->
     <div id="bigTimerUI" style="display:none;">
         <div class="big-container">
             <div id="bigTimerText" class="big-timer"></div>
@@ -183,58 +208,37 @@ button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; f
         </div>
     </div>
 
-    <div class="footer">outil libre d'accès – C.Duffner – AST PEM – V2.2 – 16/01/26</div>
+    <div class="footer">outil libre d'accès – C.Duffner – AST PEM – V2.3 – 17/01/26</div>
 </div>
 
 <script>
+//========================================================
+// OPTIONS
+//========================================================
 const SHOW_ONLY_TIME_ON_LOAD = true;
 
 let timers = {
-  feuillard: {end:null, durationMin:null, interval:null},
-  pieces:    {end:null, durationMin:null, interval:null}
+  feuillard: { end:null, durationMin:null, interval:null },
+  pieces:    { end:null, durationMin:null, interval:null }
 };
 
-/* ===== Persistance ===== */
-function saveState(){
-  const st = {
-    inputs:{
-      typeChoix: document.getElementById('typeChoix').value,
-      poidsRouleau: (document.getElementById('poidsRouleau')||{}).value || "",
-      poidsMetre: (document.getElementById('poidsMetre')||{}).value || "",
-      vitesseFeuillard: (document.getElementById('vitesseFeuillard')||{}).value || "",
-      nbPieces: (document.getElementById('nbPieces')||{}).value || "",
-      piecesParPas: (document.getElementById('piecesParPas')||{}).value || "",
-      taillePas: (document.getElementById('taillePas')||{}).value || "",
-      vitessePieces: (document.getElementById('vitessePieces')||{}).value || "",
-      startTimeFeuillard: (document.getElementById('startTimeFeuillard')||{}).value || "",
-      startTimePieces: (document.getElementById('startTimePieces')||{}).value || ""
-    },
-    timers
-  };
-  localStorage.setItem('outilDuree', JSON.stringify(st));
-}
-
-
-
+//========================================================
+// CHARGEMENT INITIAL
+//========================================================
 function loadState(){
   const raw = localStorage.getItem('outilDuree');
   const typeSelect = document.getElementById('typeChoix');
 
-  // --- 1) AUCUNE SAUVEGARDE → TOUT VIDE ---
+  // ---- 1) Première ouverture : tout vide ----
   if(!raw){
     typeSelect.value = "";
-    document.getElementById('normalUI').style.display = 'block';
-    document.getElementById('bigTimerUI').style.display = 'none';
-    document.getElementById('sectionFeuillard').style.display='none';
-    document.getElementById('sectionPieces').style.display='none';
-    document.getElementById('inputsFeuillard').classList.add('collapsed');
-    document.getElementById('inputsPieces').classList.add('collapsed');
+    hideAllSections();
     return;
   }
 
   const st = JSON.parse(raw);
 
-  // --- 2) RESTAURE LES INPUTS MAIS PAS LE TYPE ---
+  // ---- restaurer les entrées (sans forcer type) ----
   if(st.inputs){
     Object.keys(st.inputs).forEach(id=>{
       if(document.getElementById(id))
@@ -244,32 +248,7 @@ function loadState(){
 
   timers = st.timers || timers;
 
-  // Détecter si un timer est actif
-  const hasTimer =
-      (timers.feuillard && timers.feuillard.end) ||
-      (timers.pieces && timers.pieces.end);
-
-  // --- 3) SI AUCUN TIMER → TYPE = VIDE OBLIGATOIRE ---
-  if(!hasTimer){
-      typeSelect.value = "";  // <-- Réinitialisation forcée
-
-      // Masquer toutes les sections
-      document.getElementById('bigTimerUI').style.display='none';
-      document.getElementById('normalUI').style.display='block';
-      document.getElementById('sectionFeuillard').style.display='none';
-      document.getElementById('sectionPieces').style.display='none';
-
-      // Inputs invisibles tant qu'un type n'est pas choisi
-      document.getElementById('inputsFeuillard').classList.add('collapsed');
-      document.getElementById('inputsPieces').classList.add('collapsed');
-
-      return;  // <-- On sort : rien d'autre à faire
-  }
-
-  // --- 4) SI TIMER ACTIF → RESTAURER LE TYPE D’ORIGINE ---
-  typeSelect.value = st.inputs.typeChoix || "";
-
-  // TRAITEMENT DU TIMER
+  // ---- 2) Timer actif ? ----
   const now = new Date();
   let activeType = null;
 
@@ -277,154 +256,157 @@ function loadState(){
     if(timers[t] && timers[t].end){
       const end = new Date(timers[t].end);
       if(end > now){
-        activeType = t;
         timers[t].end = end;
-        showTimerBlock(t);
-        startCountdown(t,end);
+        activeType = t;
       } else {
         timers[t].end = null;
       }
     }
   });
 
-  // --- 5) MODE TIMER vs MODE NORMAL ---
-  if(activeType){
-    enterBigTimerMode(activeType);
-  } else {
-    exitBigTimerMode();
+  // ---- 3) Aucun timer → retour sur "Sélectionnez" ----
+  if(!activeType){
+    typeSelect.value = "";
+    hideAllSections();
+    return;
   }
+
+  // ---- 4) Timer actif → restaurer type & big timer ----
+  typeSelect.value = activeType;
+  showTimerBlock(activeType);
+  startCountdown(activeType, timers[activeType].end);
+  enterBigTimerMode(activeType);
 }
 
+//========================================================
+// UI
+//========================================================
+function hideAllSections(){
+  document.getElementById('bigTimerUI').style.display='none';
+  document.getElementById('normalUI').style.display='block';
 
-/* ===== UI ===== */
+  document.getElementById('sectionFeuillard').style.display='none';
+  document.getElementById('inputsFeuillard').classList.add('collapsed');
+
+  document.getElementById('sectionPieces').style.display='none';
+  document.getElementById('inputsPieces').classList.add('collapsed');
+}
 
 function onTypeChange(){
-  // L’utilisateur fait un choix → quitter bigTimer
   exitBigTimerMode();
 
   const type = document.getElementById('typeChoix').value;
 
   if(type === ""){
-    document.getElementById('sectionFeuillard').style.display='none';
-    document.getElementById('sectionPieces').style.display='none';
+    hideAllSections();
     return;
   }
-
   toggleSections();
   saveState();
 }
 
-
 function toggleSections(){
   const c = document.getElementById('typeChoix').value;
+
   document.getElementById('sectionFeuillard').style.display = (c==='feuillard')?'block':'none';
   document.getElementById('sectionPieces').style.display    = (c==='pieces')?'block':'none';
-  if (c === 'feuillard') document.getElementById('inputsFeuillard').classList.remove('collapsed');
-  if (c === 'pieces')    document.getElementById('inputsPieces').classList.remove('collapsed');
+
+  if(c==='feuillard')
+    document.getElementById('inputsFeuillard').classList.remove('collapsed');
+  if(c==='pieces')
+    document.getElementById('inputsPieces').classList.remove('collapsed');
 }
 
-function enterBigTimerMode(activeType){
-  // cacher sections & résultats, garder le select visible
-  document.getElementById('normalUI').style.display = 'none';
-  document.getElementById('bigTimerUI').style.display = 'block';
+function enterBigTimerMode(type){
+  document.getElementById('normalUI').style.display='none';
+  document.getElementById('bigTimerUI').style.display='block';
 
-  const dur = timers[activeType].durationMin || 0;
+  const dur = timers[type].durationMin || 0;
   const h = Math.floor(dur/60), m = dur%60;
 
-  // texte du bouton nouveau
   const btn = document.getElementById('btnNouveau');
-  btn.textContent = (activeType==='feuillard'
+  btn.textContent =
+    (type==='feuillard')
     ? `Lancer un nouveau rouleau de ${h}h ${m}min`
-    : `Lancer une nouvelle bobine de ${h}h ${m}min`);
-  btn.onclick = ()=>{ resetAll(); };
+    : `Lancer une nouvelle bobine de ${h}h ${m}min`;
 
-  // valeur initiale du grand timer
-  updateBigTimerFrom(activeType);
+  btn.onclick = ()=>{
+    // Reset complet, pas de reload instantané
+    localStorage.removeItem('outilDuree');
+    timers = {
+      feuillard:{end:null,durationMin:null,interval:null},
+      pieces:{end:null,durationMin:null,interval:null}
+    };
+    hideAllSections();
+    document.getElementById('typeChoix').value="";
+  };
+
+  updateBigTimerFrom(type);
 }
-
 
 function exitBigTimerMode(){
-  document.getElementById('bigTimerUI').style.display = 'none';
-  document.getElementById('normalUI').style.display = 'block';
-
-  // Réactivations propres
-  document.getElementById('inputsFeuillard').classList.remove('collapsed');
-  document.getElementById('inputsPieces').classList.remove('collapsed');
+  document.getElementById('bigTimerUI').style.display='none';
+  document.getElementById('normalUI').style.display='block';
 }
-
 
 function updateBigTimerFrom(type){
   const elSmall = document.getElementById(type==='feuillard'?'countdownFeuillard':'countdownPieces');
-  const elBig   = document.getElementById('bigTimerText');
-  if (elSmall && elBig && elSmall.textContent){
-    // retire le préfixe si présent
-    elBig.textContent = elSmall.textContent.replace(/^Temps restant\s*:\s*/i,'');
+  const elBig = document.getElementById('bigTimerText');
+  if(elSmall && elBig && elSmall.textContent){
+    elBig.textContent = elSmall.textContent.replace(/^Temps restant\s*:\s*/,'');
   }
 }
 
-/* ===== Utilitaires ===== */
+//========================================================
+// UTILS
+//========================================================
 function pad2(n){ return n.toString().padStart(2,'0'); }
 function nowHHMM(){ const d=new Date(); return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
-function parseTimeToDate(hhmm){ const [h,m]=hhmm.split(':').map(Number); const d=new Date(); d.setHours(h,m,0,0); return d; }
+function parseTimeToDate(hhmm){
+  const [h,m]=hhmm.split(':').map(Number);
+  const d=new Date(); d.setHours(h,m,0,0);
+  return d;
+}
 function addMin(date,min){ return new Date(date.getTime()+min*60000); }
 function formatHHMM(d){ return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
 
-/* ===== Timer ===== */
+//========================================================
+// TIMER
+//========================================================
 function showTimerBlock(t){
   document.getElementById(t==='feuillard'?'timeFeuillard':'timePieces').style.display='block';
 }
-function startCountdown(t, end){
+function startCountdown(t,end){
   clearInterval(timers[t].interval);
   timers[t].end = end;
+
   const el = document.getElementById(t==='feuillard'?'countdownFeuillard':'countdownPieces');
 
   function tick(){
     const now = new Date();
-    const diff = Math.max(0, end - now);
+    const diff = Math.max(0, end-now);
     const m = Math.floor(diff/60000);
     const s = Math.floor((diff%60000)/1000);
     el.textContent = `Temps restant : ${pad2(m)} min ${pad2(s)} s`;
-    // si bigTimer affiché, synchroniser le texte géant
-    if (document.getElementById('bigTimerUI').style.display === 'block') {
+
+    if(document.getElementById('bigTimerUI').style.display==='block')
       updateBigTimerFrom(t);
-    }
+
     if(diff<=0){
       clearInterval(timers[t].interval);
-      el.textContent='Terminé.';
+      el.textContent = 'Terminé.';
     }
+
     saveState();
   }
+
   tick();
-  timers[t].interval = setInterval(tick, 1000);
+  timers[t].interval = setInterval(tick,1000);
 }
 
-/* ===== Démarrage ===== */
-function departMaintenant(t){
-  const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
-  input.value = nowHHMM();
-  validerHeure(t);
-}
-function validerHeure(t){
-  if(!timers[t].durationMin){ alert("Calculez d'abord la durée."); return; }
-  const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
-  if(!input.value){ alert("Heure de début manquante"); return; }
-  const start = parseTimeToDate(input.value);
-  const end = addMin(start, timers[t].durationMin);
-  const out = document.getElementById(t==='feuillard'?'endTimeFeuillard':'endTimePieces');
-  out.textContent = (t==='feuillard'?'Si le rouleau':'Si la bobine') + ` commence à ${formatHHMM(start)}, elle terminera à ${formatHHMM(end)}.`;
-  showTimerBlock(t); startCountdown(t, end);
-}
-function previewFin(t){
-  const dur = timers[t].durationMin; if(!dur) return;
-  const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces'); if(!input.value) return;
-  const start = parseTimeToDate(input.value); const end = addMin(start, dur);
-  const out = document.getElementById(t==='feuillard'?'endTimeFeuillard':'endTimePieces');
-  out.textContent = (t==='feuillard'?'Si le rouleau':'Si la bobine') + ` commence à ${formatHHMM(start)}, elle terminera à ${formatHHMM(end)}.`;
-  clearInterval(timers[t].interval);
-  document.getElementById(t==='feuillard'?'countdownFeuillard':'countdownPieces').textContent = '';
-}
-
-/* ===== Calculs ===== */
+//========================================================
+// CALCULS
+//========================================================
 function calculFeuillard(){
   const pm = parseFloat(poidsMetre.value);
   const pr = parseFloat(poidsRouleau.value);
@@ -440,15 +422,17 @@ function calculFeuillard(){
     out.className='result success';
     out.textContent = `Durée : ${Math.floor(minTotal/60)} h ${minTotal%60} min`;
 
-    startTimeFeuillard.value = nowHHMM(); previewFin('feuillard');
+    startTimeFeuillard.value = nowHHMM();
+    previewFin('feuillard');
     startTimeFeuillard.oninput = ()=>validerHeure('feuillard');
     document.getElementById('timeFeuillard').style.display='block';
     saveState();
   } else {
     out.className='result error';
-    out.textContent='Champs incorrects.';
+    out.textContent = 'Champs incorrects.';
   }
 }
+
 function calculPieces(){
   const nb = parseFloat(nbPieces.value);
   const ppp = parseFloat(piecesParPas.value);
@@ -465,7 +449,8 @@ function calculPieces(){
     out.className='result success';
     out.textContent = `Durée : ${Math.floor(minTotal/60)} h ${minTotal%60} min`;
 
-    startTimePieces.value = nowHHMM(); previewFin('pieces');
+    startTimePieces.value = nowHHMM();
+    previewFin('pieces');
     startTimePieces.oninput = ()=>validerHeure('pieces');
     document.getElementById('timePieces').style.display='block';
     saveState();
@@ -475,16 +460,72 @@ function calculPieces(){
   }
 }
 
-/* ===== Reset ===== */
-function resetAll(){
-  localStorage.removeItem('outilDuree');
-  location.reload();
+//========================================================
+// VALIDATION & PREVIEW
+//========================================================
+function departMaintenant(t){
+  const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
+  input.value = nowHHMM();
+  validerHeure(t);
 }
 
-/* ===== Init ===== */
+function validerHeure(t){
+  if(!timers[t].durationMin){ alert("Calculez d'abord la durée."); return; }
+  const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
+  if(!input.value){ alert("Heure de début manquante"); return; }
+
+  const start = parseTimeToDate(input.value);
+  const end = addMin(start, timers[t].durationMin);
+
+  const out = document.getElementById(t==='feuillard'?'endTimeFeuillard':'endTimePieces');
+  out.textContent =
+    (t==='feuillard' ? 'Si le rouleau' : 'Si la bobine') +
+    ` commence à ${formatHHMM(start)}, elle terminera à ${formatHHMM(end)}.`;
+
+  showTimerBlock(t);
+  startCountdown(t,end);
+}
+
+function previewFin(t){
+  const dur = timers[t].durationMin;
+  if(!dur) return;
+
+  const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
+  if(!input.value) return;
+
+  const start = parseTimeToDate(input.value);
+  const end = addMin(start, dur);
+
+  const out = document.getElementById(t==='feuillard'?'endTimeFeuillard':'endTimePieces');
+  out.textContent =
+    (t==='feuillard'?'Si le rouleau':'Si la bobine') +
+    ` commence à ${formatHHMM(start)}, elle terminera à ${formatHHMM(end)}.`;
+
+  clearInterval(timers[t].interval);
+  document.getElementById(t==='feuillard'?'countdownFeuillard':'countdownPieces').textContent='';
+}
+
+//========================================================
+// RESET
+//========================================================
+function resetAll(){
+  localStorage.removeItem('outilDuree');
+  timers = {
+    feuillard:{end:null,durationMin:null,interval:null},
+    pieces:{end:null,durationMin:null,interval:null}
+  };
+  hideAllSections();
+  document.getElementById('typeChoix').value="";
+}
+
+//========================================================
+// INIT
+//========================================================
 window.addEventListener('load', loadState);
 
-/* ===== SW v5 (mise à jour forcée) ===== */
+//========================================================
+// SW v5
+//========================================================
 if('serviceWorker' in navigator){
   window.addEventListener('load', async () => {
     try {
@@ -492,22 +533,24 @@ if('serviceWorker' in navigator){
       reg.addEventListener('updatefound', () => {
         const nw = reg.installing; if(!nw) return;
         nw.addEventListener('statechange', () => {
-          if(nw.state==='installed' && navigator.serviceWorker.controller){
-              if(reg.waiting) reg.waiting.postMessage({ type:'SKIP_WAITING' });
-          }
+          if(nw.state==='installed' && navigator.serviceWorker.controller)
+             if(reg.waiting) reg.waiting.postMessage({ type:'SKIP_WAITING' });
         });
       });
       let refreshing=false;
       navigator.serviceWorker.addEventListener('controllerchange',()=>{
-          if(refreshing) return;
-          refreshing=true;
-          location.reload();
+        if(refreshing) return;
+        refreshing=true;
+        location.reload();
       });
       if(reg.update) reg.update();
-    } catch(e){ console.error("SW registration failed",e); }
+    } catch(e){
+      console.error("SW registration failed",e);
+    }
   });
 }
 </script>
 
 </body>
 </html>
+
