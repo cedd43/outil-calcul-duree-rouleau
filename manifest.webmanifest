@@ -2,38 +2,23 @@
 {
   "name": "Outil calcul durée rouleau",
   "short_name": "Durée rouleau",
-  "description": "Calcul durée rouleau/bobine avec reprise et cache",
+  "description": "Calcul durée rouleau/bobine avec sauvegarde et reprise automatique",
   "start_url": "index.html",
   "scope": "./",
   "display": "standalone",
-  aucune notif, aucun push.
-
-```js
-const CACHE = 'outil-duree-v2';
-const ASSETS = [
-  './',
-  'index.html',
-  'manifest.webmanifest',
-  'bg-pem.jpg',
-  'logo-192.png',
-  'logo-512.png'
-];
-
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(ASSETS))
-  );
-});
-
-  if(e.request.method !== 'GET') return;
-  e.respondWith(
-    caches.match(e.request).then(res =>
-      res || fetch(e.request).then(r => {
-        const copy = r.clone();
-        caches.open(CACHE).then(c => c.put(e.request, copy));
-        return r;
-      })
-    )
-  );
-});
+  "background_color": "#0b0b0b",
+  "theme_color": "#0b0b0b",
+  "icons": [
+    {
+      "src": "logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
 
