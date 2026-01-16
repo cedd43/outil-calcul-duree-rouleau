@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -14,67 +15,102 @@
 
 <style>
 :root{
-    --bg-overlay: 0.45;
-    --card-bg: 0.92;
+    /* Ajuste l'intensité du voile et du fond du formulaire */
+    --bg-overlay: 0.45;   /* 0 = pas de voile, 0.6 = plus sombre */
+    --card-bg: 0.92;      /* 1 = blanc opaque, 0.85 = un peu plus transparent */
+    --success: #28a745;
+    --primary: #007bff;
+    --start: #2e7d32;     /* vert bouton start */
+    --start-hover: #1b5e20;
 }
+
 html, body { height: 100%; }
+
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    background: #0b0b0b;
+    margin: 0; /* important pour le fond plein écran */
+    background: #0b0b0b; /* couleur de secours */
+    /* Fond = image + voile sombre via dégradé */
     background-image:
         linear-gradient(rgba(0,0,0,var(--bg-overlay)), rgba(0,0,0,var(--bg-overlay))),
-        url('bg-pem.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+        url('bg-pem.jpg'); /* image dans le même dossier que index.html */
+    background-size: cover;         /* couvre tout l'écran */
+    background-position: center;    /* centre l'image */
+    background-attachment: fixed;   /* effet léger parallax sur desktop */
     background-repeat: no-repeat;
-    padding: 20px;
+    padding: 20px; /* espace autour du container */
 }
+
+/* Cartouche du formulaire */
 .container {
-    max-width: 560px;
-    margin: 0 auto;
+    max-width: 560px;  margin: 0 auto;
     background: rgba(255,255,255,var(--card-bg));
-    padding: 22px;
-    border-radius: 10px;
+    padding: 22px; border-radius: 10px;
     box-shadow: 0 10px 28px rgba(0,0,0,0.35);
     backdrop-filter: blur(2px);
 }
+
 h1 {
-    text-align: center;
-    color: #fff;
+    text-align: center; color: #fff;
     text-shadow: 0 2px 6px rgba(0,0,0,0.5);
     margin: 10px 0 18px;
 }
+
 label { display: block; margin-top: 10px; color: #222; }
+
 input, select {
     width: 100%; padding: 8px; margin-top: 5px;
     border: 1px solid #cfd4dc; border-radius: 6px;
 }
+
+.button-row { display: grid; gap: 10px; grid-template-columns: 1fr; }
 button {
-    margin-top: 15px; padding: 10px; width: 100%;
-    background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer;
+    padding: 12px; width: 100%;
+    color: white; border: none; border-radius: 6px; cursor: pointer;
+    font-weight: 600; letter-spacing: .2px;
 }
-button:hover { background: #0056b3; }
-.result { margin-top: 15px; font-weight: bold; }
-.result.success { color: #28a745; }
+.btn-primary { background: var(--primary); }
+.btn-primary:hover { background: #0056b3; }
+.btn-start { background: var(--start); font-size: 1.05rem; }
+.btn-start:hover { background: var(--start-hover); }
+.btn-reset { background: #6c757d; }
+.btn-reset:hover { background: #555; }
+
+.result { margin-top: 12px; font-weight: bold; }
+.result.success { color: var(--success); }
 .error { color: #d93025; font-weight: bold; }
+
 .section { display: none; }
-.sub-section { margin-top: 28px; padding-top: 14px; border-top: 1px solid rgba(0,0,0,0.12); }
-.sub-section h3 { margin-bottom: 10px; color: #007bff; }
-.time-block { margin-top: 12px; padding: 10px; background: rgba(0,0,0,0.05); border-radius: 6px; }
+
+/* Séparateur visuel pour la partie "Calcul vitesse" */
+.sub-section {
+    margin-top: 28px; padding-top: 14px; border-top: 1px solid rgba(0,0,0,0.12);
+}
+.sub-section h3 { margin-bottom: 10px; color: var(--primary); }
+
+/* Bloc horaire + compte à rebours */
+.time-block {
+    margin-top: 12px; padding: 12px; background: rgba(0,0,0,0.05); border-radius: 6px;
+}
 .time-inline { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .time-inline label { margin-top: 0; }
-.badge { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; background: #e7f5ee; color: #1f7a44; border: 1px solid #bfe5d0; margin-left: 8px; }
 .countdown { margin-top: 8px; font-weight: bold; color: #333; }
+.help-note { margin-top: 8px; font-size: 12px; color:#333; }
+
+/* Pied de page lisible sur fond photo */
 .footer {
-    margin: 24px auto 0; display: block; width: fit-content; font-size: 14px; color: #fff;
-    font-weight: bold; text-align: center; text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+    margin: 24px auto 0; display: block; width: fit-content;
+    font-size: 14px; color: #fff; font-weight: bold; text-align: center;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.7);
     background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 6px;
 }
-@media (max-width: 480px) { body { padding: 12px; background-attachment: scroll; } .container { padding: 16px; } }
-.small { font-size: 12px; color:#333; margin-top:6px; }
-.toggle-row { display:flex; gap:10px; align-items:center; margin-top:8px; }
+
+/* Petits écrans */
+@media (max-width: 480px) {
+    body { padding: 12px; background-attachment: scroll; }
+    .container { padding: 16px; }
+    .button-row { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -92,35 +128,53 @@ button:hover { background: #0056b3; }
         <h2>Feuillard</h2>
         <label>Poids du rouleau (kg):</label>
         <input type="number" id="poidsRouleau" step="10" placeholder="ex. 750">
+
         <label>Poids par mètre (g/m):</label>
         <input type="number" id="poidsMetre" step="1" placeholder="ex. 2350">
+
         <label>Vitesse (m/h):</label>
         <input type="number" id="vitesseFeuillard" step="5" placeholder="ex. 120">
-        <button onclick="calculFeuillard()">Calculer Durée</button>
+
+        <div class="button-row">
+            <button class="btn-primary" onclick="calculFeuillard()">Calculer Durée</button>
+        </div>
         <div class="result" id="resultFeuillard"></div>
 
+        <!-- Bloc horaire + rappel -->
         <div class="time-block" id="timeFeuillard" style="display:none;">
           <div class="time-inline">
             <label for="startTimeFeuillard">Heure de début :</label>
             <input type="time" id="startTimeFeuillard">
-            <span class="badge">par défaut : maintenant</span>
           </div>
-          <div class="toggle-row small">
-            <input type="checkbox" id="wakelockFeuillard" onchange="toggleWakeLock(this)">
-            <label for="wakelockFeuillard">Garder l'écran allumé (réduit le risque de veille)</label>
+
+          <div class="button-row" style="margin-top:8px;">
+            <button class="btn-start" onclick="lancerTimerMaintenant('feuillard')">LANCER LE TIMER</button>
           </div>
+
           <div class="countdown" id="countdownFeuillard"></div>
           <div class="result" id="endTimeFeuillard"></div>
-          <button id="reminderFeuillard" onclick="activerRappel('feuillard')" style="margin-top:10px;">
-            Activer le rappel 5 min avant la fin
-          </button>
+
+          <div class="button-row" style="margin-top:8px;">
+            <button class="btn-primary" id="reminderFeuillard" onclick="activerRappel('feuillard')">
+              Activer le rappel 5 min avant la fin
+            </button>
+          </div>
+
+          <p class="help-note">
+            Pour recevoir un rappel sur le téléphone, <b>ajoutez l’app à l’écran d’accueil</b> et <b>gardez-la ouverte</b>.<br>
+            • <b>Android (Chrome)</b> : Installer l’app<br>
+            • <b>iPhone (Safari)</b> : Partager → Sur l’écran d’accueil
+          </p>
         </div>
 
+        <!-- Sous-section vitesse cible -->
         <div class="sub-section">
             <h3>Calculer la vitesse pour une durée cible</h3>
             <label>Durée cible (minutes):</label>
             <input type="number" id="dureeCibleFeuillard" placeholder="ex. 90">
-            <button onclick="calculVitesseFeuillard()">Calculer Vitesse</button>
+            <div class="button-row">
+                <button class="btn-primary" onclick="calculVitesseFeuillard()">Calculer Vitesse</button>
+            </div>
             <div class="result" id="resultVitesseFeuillard"></div>
         </div>
     </div>
@@ -130,150 +184,370 @@ button:hover { background: #0056b3; }
         <h2>Pièces Découpées</h2>
         <label>Nombre total de pièces:</label>
         <input type="number" id="nbPieces" step="1000" placeholder="ex. 25000">
+
         <label>Nombre de pièces par pas:</label>
         <input type="number" id="piecesParPas" step="1" value="1" placeholder="ex. 4">
+
         <label>Taille du pas (mm):</label>
         <input type="number" id="taillePas" step="1" placeholder="ex. 35">
+
         <label>Vitesse (m/h):</label>
         <input type="number" id="vitessePieces" step="5" placeholder="ex. 90">
-        <button onclick="calculPieces()">Calculer Durée</button>
+
+        <div class="button-row">
+            <button class="btn-primary" onclick="calculPieces()">Calculer Durée</button>
+        </div>
         <div class="result" id="resultPieces"></div>
 
+        <!-- Bloc horaire + rappel -->
         <div class="time-block" id="timePieces" style="display:none;">
           <div class="time-inline">
             <label for="startTimePieces">Heure de début :</label>
             <input type="time" id="startTimePieces">
-            <span class="badge">par défaut : maintenant</span>
           </div>
-          <div class="toggle-row small">
-            <input type="checkbox" id="wakelockPieces" onchange="toggleWakeLock(this)">
-            <label for="wakelockPieces">Garder l'écran allumé (réduit le risque de veille)</label>
+
+          <div class="button-row" style="margin-top:8px;">
+            <button class="btn-start" onclick="lancerTimerMaintenant('pieces')">LANCER LE TIMER</button>
           </div>
+
           <div class="countdown" id="countdownPieces"></div>
           <div class="result" id="endTimePieces"></div>
-          <button id="reminderPieces" onclick="activerRappel('pieces')" style="margin-top:10px;">
-            Activer le rappel 5 min avant la fin
-          </button>
+
+          <div class="button-row" style="margin-top:8px;">
+            <button class="btn-primary" id="reminderPieces" onclick="activerRappel('pieces')">
+              Activer le rappel 5 min avant la fin
+            </button>
+          </div>
+
+          <p class="help-note">
+            Pour recevoir un rappel sur le téléphone, <b>ajoutez l’app à l’écran d’accueil</b> et <b>gardez-la ouverte</b>.<br>
+            • <b>Android (Chrome)</b> : Installer l’app<br>
+            • <b>iPhone (Safari)</b> : Partager → Sur l’écran d’accueil
+          </p>
         </div>
 
+        <!-- Sous-section vitesse cible -->
         <div class="sub-section">
             <h3>Calculer la vitesse pour une durée cible</h3>
             <label>Durée cible (minutes):</label>
             <input type="number" id="dureeCiblePieces" placeholder="ex. 120">
-            <button onclick="calculVitessePieces()">Calculer Vitesse</button>
+            <div class="button-row">
+                <button class="btn-primary" onclick="calculVitessePieces()">Calculer Vitesse</button>
+            </div>
             <div class="result" id="resultVitessePieces"></div>
         </div>
     </div>
 
-    <button style="background:#6c757d;" onclick="resetFields()">Réinitialiser tous les champs</button>
+    <div class="button-row" style="margin-top:10px;">
+        <button class="btn-reset" onclick="resetFields()">Réinitialiser tous les champs</button>
+    </div>
 
-    <div class="footer">outil libre d'accès - C.Duffner - AST PEM - V1.6 - 15/01/26</div>
+    <div class="footer">outil libre d'accès - C.Duffner - AST PEM - V1.7 - 15/01/26</div>
 </div>
 
 <script>
+/* ==== Utilitaires affichage ==== */
 function toggleSections() {
     const choix = document.getElementById('typeChoix').value;
     document.getElementById('sectionFeuillard').style.display = (choix === 'feuillard') ? 'block' : 'none';
     document.getElementById('sectionPieces').style.display = (choix === 'pieces') ? 'block' : 'none';
 }
 function pad2(n){ return n.toString().padStart(2,'0'); }
-function toHMS(hours) { const totalMinutes = Math.round(hours * 60); const h = Math.floor(totalMinutes / 60); const m = totalMinutes % 60; return `${h} h ${m} min`; }
-function setDefaultNowTo(inputEl){ const now = new Date(); inputEl.value = `${pad2(now.getHours())}:${pad2(now.getMinutes())}`; }
-function parseTimeToToday(timeStr){ const [h,m] = (timeStr || '00:00').split(':').map(v=>parseInt(v||'0',10)); const d = new Date(); d.setHours(h, m, 0, 0); return d; }
+function toHMS(hours) {
+    const totalMinutes = Math.round(hours * 60);
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    return `${h} h ${m} min`;
+}
+function parseTimeToToday(timeStr){
+    const [h,m] = (timeStr || '00:00').split(':').map(v=>parseInt(v||'0',10));
+    const d = new Date();
+    d.setHours(h, m, 0, 0);
+    return d;
+}
 function addMinutes(date, minutes){ return new Date(date.getTime() + minutes*60000); }
 function formatHHMM(date){ return `${pad2(date.getHours())}:${pad2(date.getMinutes())}`; }
-function showError(element, message) { element.className = 'result error'; element.innerText = message; }
-function showSuccess(element, message) { element.className = 'result success'; element.innerText = message; }
-let timers = { feuillard: { timeoutId: null, intervalId: null, end: null, durationMin: null }, pieces: { timeoutId: null, intervalId: null, end: null, durationMin: null } };
-function clearTimers(which){ const t = timers[which]; if(!t) return; if (t.timeoutId) { clearTimeout(t.timeoutId); t.timeoutId = null; } if (t.intervalId){ clearInterval(t.intervalId); t.intervalId = null; } t.end = null; }
-function startCountdown(which, endDate){ const el = (which === 'feuillard') ? document.getElementById('countdownFeuillard') : document.getElementById('countdownPieces'); clearTimers(which); timers[which].end = endDate; function tick(){ const now = new Date(); let diff = Math.max(0, endDate - now); const min = Math.floor(diff/60000); const sec = Math.floor((diff%60000)/1000); el.textContent = `Temps restant : ${pad2(min)} min ${pad2(sec)} s`; if (diff <= 0) { clearTimers(which); el.textContent = "C'est terminé."; notify("Fin : production terminée", { body: "Le temps estimé est atteint.", badge: "logo-192.png", icon: "logo-192.png" }); beep(); vibrate(300); } } tick(); timers[which].intervalId = setInterval(tick, 1000); }
-async function ensureNotificationPermission(){ if (!("Notification" in window)) { alert("Notifications non supportées par ce navigateur."); return false; } if (Notification.permission === "granted") return true; const perm = await Notification.requestPermission(); return perm === "granted"; }
-async function notify(title, options = {}){ try { const reg = await navigator.serviceWorker.getRegistration(); if (reg && 'showNotification' in reg) { return reg.showNotification(title, options); } } catch(e) {} try { return new Notification(title, options); } catch(e) {} }
-function beep(){ try{ const ctx = new (window.AudioContext || window.webkitAudioContext)(); const o = ctx.createOscillator(); const g = ctx.createGain(); o.type = "sine"; o.frequency.value = 880; o.connect(g); g.connect(ctx.destination); g.gain.setValueAtTime(0.001, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.4, ctx.currentTime + 0.02); o.start(); setTimeout(()=>{ g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.2); o.stop(); ctx.close(); }, 400); }catch(e){} }
+function showError(element, message) {
+    element.className = 'result error';
+    element.innerText = message;
+}
+function showSuccess(element, message) {
+    element.className = 'result success';
+    element.innerText = message;
+}
+
+/* ==== Timers et compte à rebours ==== */
+let timers = {
+  feuillard: { timeoutId: null, intervalId: null, end: null, durationMin: null },
+  pieces:    { timeoutId: null, intervalId: null, end: null, durationMin: null }
+};
+function clearTimers(which){
+    const t = timers[which];
+    if(!t) return;
+    if (t.timeoutId) { clearTimeout(t.timeoutId); t.timeoutId = null; }
+    if (t.intervalId){ clearInterval(t.intervalId); t.intervalId = null; }
+    t.end = null;
+}
+function startCountdown(which, endDate){
+    const el = (which === 'feuillard') ? document.getElementById('countdownFeuillard')
+                                       : document.getElementById('countdownPieces');
+    clearTimers(which);
+    timers[which].end = endDate;
+
+    function tick(){
+        const now = new Date();
+        let diff = Math.max(0, endDate - now); // ms
+        const min = Math.floor(diff/60000);
+        const sec = Math.floor((diff%60000)/1000);
+        el.textContent = `Temps restant : ${pad2(min)} min ${pad2(sec)} s`;
+        if (diff <= 0) {
+            clearTimers(which);
+            el.textContent = "C'est terminé.";
+            notify("Fin : production terminée", {
+                body: "Le temps estimé est atteint.",
+                badge: "logo-192.png", icon: "logo-192.png"
+            });
+            beep(); vibrate(300);
+        }
+    }
+    tick();
+    timers[which].intervalId = setInterval(tick, 1000);
+}
+
+/* ==== Notifications (best-effort dans le navigateur) ==== */
+async function ensureNotificationPermission(){
+    if (!("Notification" in window)) {
+        alert(
+"Notifications non disponibles ici.\n\n\
+Pour recevoir un rappel :\n\
+• Android (Chrome) : Installez l’app (Ajouter à l’écran d’accueil)\n\
+• iPhone (Safari)  : Partager → Sur l’écran d’accueil\n\n\
+Gardez ensuite l’app ouverte."
+        );
+        return false;
+    }
+    if (Notification.permission === "granted") return true;
+    const perm = await Notification.requestPermission();
+    if (perm !== "granted") {
+        alert("Permission notifications refusée. Vous pouvez l'activer dans les réglages du navigateur.");
+        return false;
+    }
+    return true;
+}
+
+async function notify(title, options = {}){
+    try {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg && 'showNotification' in reg) {
+            return reg.showNotification(title, options);
+        }
+    } catch(e) {}
+    try { return new Notification(title, options); } catch(e) {}
+}
+
+function beep(){
+    try{
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.value = 880;
+        o.connect(g); g.connect(ctx.destination);
+        g.gain.setValueAtTime(0.001, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.4, ctx.currentTime + 0.02);
+        o.start();
+        setTimeout(()=>{ g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.2); o.stop(); ctx.close(); }, 400);
+    }catch(e){}
+}
 function vibrate(ms){ if (navigator.vibrate) navigator.vibrate(ms); }
-async function activerRappel(which){ const ok = await ensureNotificationPermission(); if (!ok) return; const t = timers[which]; if (!t || !t.end) { alert("Veuillez d'abord calculer la durée et définir l'heure de début."); return; } const remindAt = new Date(t.end.getTime() - 5*60000); const delay = remindAt - new Date(); if (delay <= 0) { await notify("Rappel : fin dans ~5 minutes", { body: "Préparez le changement.", badge: "logo-192.png", icon: "logo-192.png" }); beep(); vibrate(200); return; } clearTimeout(t.timeoutId); t.timeoutId = setTimeout(async ()=>{ await notify("Rappel : fin dans ~5 minutes", { body: "Préparez le changement.", badge: "logo-192.png", icon: "logo-192.png" }); beep(); vibrate(200); }, delay); alert("Rappel programmé 5 minutes avant la fin (tant que la page/PWA reste ouverte)."); }
+
+/* ==== Rappel 5 min avant la fin ==== */
+async function activerRappel(which){
+    const ok = await ensureNotificationPermission();
+    if (!ok) return;
+
+    const t = timers[which];
+    if (!t || !t.end) {
+        alert("Veuillez d'abord lancer le timer (ou saisir l'heure de début).");
+        return;
+    }
+    const remindAt = new Date(t.end.getTime() - 5*60000); // -5 min
+    const delay = remindAt - new Date();
+
+    if (delay <= 0) {
+        await notify("Rappel : fin dans ~5 minutes", { body: "Préparez le changement.", badge: "logo-192.png", icon: "logo-192.png" });
+        beep(); vibrate(200);
+        return;
+    }
+
+    clearTimeout(t.timeoutId);
+    t.timeoutId = setTimeout(async ()=>{
+        await notify("Rappel : fin dans ~5 minutes", { body: "Préparez le changement.", badge: "logo-192.png", icon: "logo-192.png" });
+        beep(); vibrate(200);
+    }, delay);
+
+    alert("Rappel programmé 5 minutes avant la fin (tant que l’app reste ouverte).");
+}
+
+/* ==== Lancer le timer (B1) ==== */
+function lancerTimerMaintenant(which){
+    // B1 : place l'heure actuelle dans le champ, puis démarre
+    const now = new Date();
+    const hhmm = `${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+    if (which === 'feuillard') {
+        const input = document.getElementById('startTimeFeuillard');
+        input.value = hhmm;
+        updateTimerFromStart('feuillard');
+    } else {
+        const input = document.getElementById('startTimePieces');
+        input.value = hhmm;
+        updateTimerFromStart('pieces');
+    }
+}
+
+/* ==== Recalcule fin & relance le compte à rebours depuis une heure saisie ==== */
+function updateTimerFromStart(which){
+    const dur = timers[which].durationMin;
+    if (!dur) {
+        alert("Calculez d’abord la durée avant de lancer le timer.");
+        return;
+    }
+    if (which === 'feuillard') {
+        const startInput = document.getElementById('startTimeFeuillard');
+        if (!startInput.value) { alert("Veuillez saisir l'heure de début ou utiliser LANCER LE TIMER."); return; }
+        const s = parseTimeToToday(startInput.value);
+        const e = addMinutes(s, dur);
+        document.getElementById('endTimeFeuillard').innerText =
+            `Si le rouleau commence à ${formatHHMM(s)}, il terminera à ${formatHHMM(e)}.`;
+        startCountdown('feuillard', e);
+    } else {
+        const startInput = document.getElementById('startTimePieces');
+        if (!startInput.value) { alert("Veuillez saisir l'heure de début ou utiliser LANCER LE TIMER."); return; }
+        const s = parseTimeToToday(startInput.value);
+        const e = addMinutes(s, dur);
+        document.getElementById('endTimePieces').innerText =
+            `Si la bobine commence à ${formatHHMM(s)}, elle terminera à ${formatHHMM(e)}.`;
+        startCountdown('pieces', e);
+    }
+}
+
+/* ==== Calculs ==== */
 function calculFeuillard() {
     const poidsMetreG = parseFloat(document.getElementById('poidsMetre').value);
     const poidsRouleau = parseFloat(document.getElementById('poidsRouleau').value);
     const vitesse = parseFloat(document.getElementById('vitesseFeuillard').value);
     const out = document.getElementById('resultFeuillard');
+
     if (poidsMetreG > 0 && poidsRouleau > 0 && vitesse > 0) {
         const poidsMetreKg = poidsMetreG / 1000;
-        const dureeH = poidsRouleau / (poidsMetreKg * vitesse);
+        const dureeH = poidsRouleau / (poidsMetreKg * vitesse);   // en heures
         const dureeMin = Math.round(dureeH*60);
         showSuccess(out, `Durée : ${toHMS(dureeH)}`);
-        const block = document.getElementById('timeFeuillard'); block.style.display = 'block';
-        const startInput = document.getElementById('startTimeFeuillard'); if (!startInput.value) setDefaultNowTo(startInput);
-        const start = parseTimeToToday(startInput.value); const end = addMinutes(start, dureeMin);
-        document.getElementById('endTimeFeuillard').innerText = `Si le rouleau commence à ${formatHHMM(start)}, il terminera à ${formatHHMM(end)}.`;
-        timers.feuillard.durationMin = dureeMin; startCountdown('feuillard', end);
-        startInput.oninput = () => { const s = parseTimeToToday(startInput.value); const e = addMinutes(s, timers.feuillard.durationMin || 0); document.getElementById('endTimeFeuillard').innerText = `Si le rouleau commence à ${formatHHMM(s)}, il terminera à ${formatHHMM(e)}.`; startCountdown('feuillard', e); };
-    } else { showError(out, "Veuillez remplir tous les champs correctement."); document.getElementById('timeFeuillard').style.display = 'none'; clearTimers('feuillard'); }
+
+        const block = document.getElementById('timeFeuillard');
+        block.style.display = 'block';
+
+        timers.feuillard.durationMin = dureeMin;
+
+        // Recalcul automatique si l'heure de début est modifiée
+        const startInput = document.getElementById('startTimeFeuillard');
+        startInput.oninput = () => updateTimerFromStart('feuillard');
+
+        // Pas de départ automatique : l'opérateur choisit
+        // soit modifier l'heure, soit appuyer sur LANCER LE TIMER
+    } else {
+        showError(out, "Veuillez remplir tous les champs correctement.");
+        document.getElementById('timeFeuillard').style.display = 'none';
+        clearTimers('feuillard');
+    }
 }
+
 function calculVitesseFeuillard() {
     const poidsMetreG = parseFloat(document.getElementById('poidsMetre').value);
     const poidsRouleau = parseFloat(document.getElementById('poidsRouleau').value);
     const dureeCibleMin = parseFloat(document.getElementById('dureeCibleFeuillard').value);
     const out = document.getElementById('resultVitesseFeuillard');
+
     if (poidsMetreG > 0 && poidsRouleau > 0 && dureeCibleMin > 0) {
-        const poidsMetreKg = poidsMetreG / 1000; const dureeCibleH = dureeCibleMin / 60; const vitesse = poidsRouleau / (poidsMetreKg * dureeCibleH);
+        const poidsMetreKg = poidsMetreG / 1000;
+        const dureeCibleH = dureeCibleMin / 60;
+        const vitesse = poidsRouleau / (poidsMetreKg * dureeCibleH);
         showSuccess(out, `Vitesse nécessaire : ${vitesse.toFixed(2)} m/h`);
-    } else { showError(out, "Veuillez remplir tous les champs correctement."); }
+    } else {
+        showError(out, "Veuillez remplir tous les champs correctement.");
+    }
 }
+
 function calculPieces() {
     const nbPieces = parseFloat(document.getElementById('nbPieces').value);
     const piecesParPas = parseFloat(document.getElementById('piecesParPas').value);
     const taillePasMM = parseFloat(document.getElementById('taillePas').value);
     const vitesse = parseFloat(document.getElementById('vitessePieces').value);
     const out = document.getElementById('resultPieces');
+
     if (nbPieces > 0 && piecesParPas > 0 && taillePasMM > 0 && vitesse > 0) {
-        const taillePasM = taillePasMM / 1000; const dureeH = (nbPieces * taillePasM) / (piecesParPas * vitesse); const dureeMin = Math.round(dureeH*60);
+        const taillePasM = taillePasMM / 1000;
+        const dureeH = (nbPieces * taillePasM) / (piecesParPas * vitesse);
+        const dureeMin = Math.round(dureeH*60);
         showSuccess(out, `Durée : ${toHMS(dureeH)}`);
-        const block = document.getElementById('timePieces'); block.style.display = 'block';
-        const startInput = document.getElementById('startTimePieces'); if (!startInput.value) setDefaultNowTo(startInput);
-        const start = parseTimeToToday(startInput.value); const end = addMinutes(start, dureeMin);
-        document.getElementById('endTimePieces').innerText = `Si la bobine commence à ${formatHHMM(start)}, elle terminera à ${formatHHMM(end)}.`;
-        timers.pieces.durationMin = dureeMin; startCountdown('pieces', end);
-        startInput.oninput = () => { const s = parseTimeToToday(startInput.value); const e = addMinutes(s, timers.pieces.durationMin || 0); document.getElementById('endTimePieces').innerText = `Si la bobine commence à ${formatHHMM(s)}, elle terminera à ${formatHHMM(e)}.`; startCountdown('pieces', e); };
-    } else { showError(out, "Veuillez remplir tous les champs correctement."); document.getElementById('timePieces').style.display = 'none'; clearTimers('pieces'); }
+
+        const block = document.getElementById('timePieces');
+        block.style.display = 'block';
+
+        timers.pieces.durationMin = dureeMin;
+
+        // Recalcul automatique si l'heure de début est modifiée
+        const startInput = document.getElementById('startTimePieces');
+        startInput.oninput = () => updateTimerFromStart('pieces');
+
+        // Pas de départ automatique : l'opérateur choisit
+        // soit modifier l'heure, soit appuyer sur LANCER LE TIMER
+    } else {
+        showError(out, "Veuillez remplir tous les champs correctement.");
+        document.getElementById('timePieces').style.display = 'none';
+        clearTimers('pieces');
+    }
 }
+
 function calculVitessePieces() {
     const nbPieces = parseFloat(document.getElementById('nbPieces').value);
     const piecesParPas = parseFloat(document.getElementById('piecesParPas').value);
     const taillePasMM = parseFloat(document.getElementById('taillePas').value);
     const dureeCibleMin = parseFloat(document.getElementById('dureeCiblePieces').value);
     const out = document.getElementById('resultVitessePieces');
+
     if (nbPieces > 0 && piecesParPas > 0 && taillePasMM > 0 && dureeCibleMin > 0) {
-        const taillePasM = taillePasMM / 1000; const dureeCibleH = dureeCibleMin / 60; const vitesse = (nbPieces * taillePasM) / (piecesParPas * dureeCibleH);
+        const taillePasM = taillePasMM / 1000;
+        const dureeCibleH = dureeCibleMin / 60;
+        const vitesse = (nbPieces * taillePasM) / (piecesParPas * dureeCibleH);
         showSuccess(out, `Vitesse nécessaire : ${vitesse.toFixed(2)} m/h`);
-    } else { showError(out, "Veuillez remplir tous les champs correctement."); }
+    } else {
+        showError(out, "Veuillez remplir tous les champs correctement.");
+    }
 }
+
 function resetFields() {
     document.querySelectorAll('input').forEach(input => input.value = '');
     document.querySelectorAll('.result').forEach(div => { div.innerText = ''; div.className = 'result'; });
     ['feuillard','pieces'].forEach(s => {
-        document.getElementById('time'+(s=='feuillard'?'Feuillard':'Pieces')).style.display = 'none';
+        document.getElementById('time'+(s==='feuillard'?'Feuillard':'Pieces')).style.display = 'none';
         clearTimers(s);
         timers[s].durationMin = null;
     });
 }
-// Wake Lock API (réduire mise en veille écran)
-let wakeLock = null;
-async function toggleWakeLock(chk){
-    if (!('wakeLock' in navigator)) { alert('Wake Lock non supporté sur ce navigateur.'); chk.checked=false; return; }
-    try{
-        if (chk.checked) {
-            wakeLock = await navigator.wakeLock.request('screen');
-            wakeLock.addEventListener('release', ()=>{ chk.checked=false; });
-        } else {
-            if (wakeLock) { await wakeLock.release(); wakeLock = null; }
-        }
-    }catch(e){ alert('Impossible d\'activer le Wake Lock.'); chk.checked=false; }
-}
-// Enregistrer SW pour PWA
+
+/* ==== Enregistrement SW (PWA) ==== */
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(console.error); });
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(console.error);
+    });
 }
+
+/* ==== Audio/Vibration util ==== */
+function beep(){ try{ const ctx = new (window.AudioContext||window.webkitAudioContext)(); const o=ctx.createOscillator(); const g=ctx.createGain(); o.type="sine"; o.frequency.value=880; o.connect(g); g.connect(ctx.destination); g.gain.setValueAtTime(0.001, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.4, ctx.currentTime+0.02); o.start(); setTimeout(()=>{ g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+0.2); o.stop(); ctx.close(); }, 400); }catch(e){} }
+function vibrate(ms){ if(navigator.vibrate) navigator.vibrate(ms); }
+
 </script>
 </body>
 </html>
+``
