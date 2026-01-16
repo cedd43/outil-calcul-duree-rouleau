@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -52,6 +53,11 @@ button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; f
 .countdown{ margin-top:8px; font-weight:bold; color:#333; }
 .help-note{ margin-top:12px; font-size:12px; color:#444; }
 .footer{ margin:24px auto 0; width:fit-content; color:white; font-size:14px; font-weight:bold; background:rgba(0,0,0,0.4); padding:8px 12px; border-radius:6px; text-shadow:0 2px 6px rgba(0,0,0,0.7); }
+/* séparateur OU */
+.or-sep { text-align:center; font-weight:700; color:#666; margin:8px 0 -4px; letter-spacing:.5px; }
+.or-sep::before, .or-sep::after {
+  content:""; display:inline-block; width:30%; height:1px; background:#bbb; vertical-align:middle; margin:0 8px;
+}
 </style>
 </head>
 <body>
@@ -79,10 +85,13 @@ button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; f
 
         <div id="timeFeuillard" class="time-block" style="display:none;">
           <div class="time-inline">
-            <label>Heure de début :</label>
+            <label><b>Choisir l'heure de début (du rouleau)</b> :</label>
             <input type="time" id="startTimeFeuillard">
           </div>
+
+          <div class="or-sep">OU</div>
           <button class="btn-start" onclick="departMaintenant('feuillard')">Départ rouleau</button>
+
           <div class="countdown" id="countdownFeuillard"></div>
           <div class="result" id="endTimeFeuillard"></div>
         </div>
@@ -105,10 +114,13 @@ button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; f
 
         <div id="timePieces" class="time-block" style="display:none;">
           <div class="time-inline">
-            <label>Heure de début :</label>
+            <label><b>Choisir l'heure de début (de la bobine)</b> :</label>
             <input type="time" id="startTimePieces">
           </div>
+
+          <div class="or-sep">OU</div>
           <button class="btn-start" onclick="departMaintenant('pieces')">Départ bobine</button>
+
           <div class="countdown" id="countdownPieces"></div>
           <div class="result" id="endTimePieces"></div>
         </div>
@@ -116,11 +128,11 @@ button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; f
 
     <button class="btn-reset" onclick="resetAll()">Réinitialiser</button>
 
+    <!-- INFO PWA (sans la phrase à supprimer) -->
     <p class="help-note">
-        Pour une utilisation optimale sur téléphone :<br>
+        Pour une utilisation sur téléphone :<br>
         • <b>Android (Chrome)</b> → Installer l'app (Ajouter à l’écran d’accueil)<br>
-        • <b>iPhone (Safari)</b> → Partager → <b>Sur l’écran d’accueil</b><br>
-        Puis gardez l'application <b>ouverte</b> pour que le minuteur fonctionne.
+        • <b>iPhone (Safari)</b> → Partager → <b>Sur l’écran d’accueil</b>
     </p>
 
     <div class="footer">outil libre d'accès – C.Duffner – AST PEM – V2.0 – 16/01/26</div>
@@ -133,6 +145,7 @@ let timers = {
     pieces:    {end:null, durationMin:null, interval:null}
 };
 
+// =================== Save/Load =================
 function saveState(){
   const st = {
     inputs:{
@@ -150,7 +163,6 @@ function saveState(){
   };
   localStorage.setItem('outilDuree', JSON.stringify(st));
 }
-
 function loadState(){
   const raw = localStorage.getItem('outilDuree');
   if(!raw) return;
@@ -179,8 +191,8 @@ function parseTimeToDate(hhmm){ const [h,m]=hhmm.split(':').map(Number); const d
 function addMin(date,min){ return new Date(date.getTime()+min*60000); }
 function formatHHMM(d){ return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
 
+// =================== Timer =====================
 function showTimerBlock(t){ document.getElementById(t==='feuillard'?'timeFeuillard':'timePieces').style.display='block'; }
-
 function startCountdown(t, end){
   clearInterval(timers[t].interval);
   timers[t].end = end;
@@ -198,12 +210,14 @@ function startCountdown(t, end){
   timers[t].interval = setInterval(tick, 1000);
 }
 
+// départ immédiat : met l'heure actuelle puis démarre
 function departMaintenant(t){
   const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
   input.value = nowHHMM();
   validerHeure(t);
 }
 
+// valider après saisie manuelle (relance timer)
 function validerHeure(t){
   if(!timers[t].durationMin){ alert('Calculez d\'abord la durée.'); return; }
   const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
@@ -215,6 +229,7 @@ function validerHeure(t){
   showTimerBlock(t); startCountdown(t, end);
 }
 
+// preview fin sans démarrer le timer
 function previewFin(t){
   const dur = timers[t].durationMin; if(!dur) return;
   const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
@@ -226,6 +241,7 @@ function previewFin(t){
   document.getElementById(t==='feuillard'?'countdownFeuillard':'countdownPieces').textContent = '';
 }
 
+// =================== Calculs =====================
 function calculFeuillard(){
   const pm = parseFloat(poidsMetre.value); const pr = parseFloat(poidsRouleau.value); const v = parseFloat(vitesseFeuillard.value);
   const out = resultFeuillard;
@@ -237,9 +253,10 @@ function calculFeuillard(){
     startTimeFeuillard.value = nowHHMM(); previewFin('feuillard');
     startTimeFeuillard.oninput = ()=>validerHeure('feuillard');
     timeFeuillard.style.display='block'; saveState();
-  }else{ out.className='result error'; out.textContent='Champs incorrects.'; }
+  }else{
+    out.className='result error'; out.textContent='Champs incorrects.';
+  }
 }
-
 function calculPieces(){
   const nb = parseFloat(nbPieces.value); const ppp = parseFloat(piecesParPas.value); const tm = parseFloat(taillePas.value); const v = parseFloat(vitessePieces.value);
   const out = resultPieces;
@@ -251,34 +268,36 @@ function calculPieces(){
     startTimePieces.value = nowHHMM(); previewFin('pieces');
     startTimePieces.oninput = ()=>validerHeure('pieces');
     timePieces.style.display='block'; saveState();
-  }else{ out.className='result error'; out.textContent='Champs incorrects.'; }
+  }else{
+    out.className='result error'; out.textContent='Champs incorrects.';
+  }
 }
 
+// =================== Reset =====================
 function resetAll(){ localStorage.removeItem('outilDuree'); location.reload(); }
 
-// Restore state on load
+// init
 window.addEventListener('load', loadState);
 
-// Register SW robustly
-if ('serviceWorker' in navigator) {
+// SW
+if('serviceWorker' in navigator){
   window.addEventListener('load', async () => {
     try {
       const reg = await navigator.serviceWorker.register('./sw.js?v=3');
       reg.addEventListener('updatefound', () => {
-        const newWorker = reg.installing;
-        if (!newWorker) return;
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+        const nw = reg.installing; if(!nw) return;
+        nw.addEventListener('statechange', () => {
+          if (nw.state === 'installed' && navigator.serviceWorker.controller) {
             if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
           }
         });
       });
-      let refreshing = false;
+      let refreshing=false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (refreshing) return; refreshing = true; location.reload();
+        if(refreshing) return; refreshing=true; location.reload();
       });
       if (reg && reg.update) reg.update();
-    } catch (e) { console.error('SW registration failed', e); }
+    } catch(e){ console.error('SW registration failed', e); }
   });
 }
 </script>
