@@ -7,8 +7,8 @@
 <title>Calcul Durée Rouleau</title>
 
 <!-- PWA -->
-<link rel="manifest" href="manifest.webmanifest?v=3">
-<link rel="apple-touch-icon" href="logo-192.png">
+manifest.webmanifest?v=3
+logo-192.png
 <meta name="theme-color" content="#0b0b0b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -52,7 +52,11 @@ button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; f
 .time-inline{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
 .countdown{ margin-top:8px; font-weight:bold; color:#333; }
 .help-note{ margin-top:12px; font-size:12px; color:#444; }
-.footer{ margin:24px auto 0; width:fit-content; color:white; font-size:14px; font-weight:bold; background:rgba(0,0,0,0.4); padding:8px 12px; border-radius:6px; text-shadow:0 2px 6px rgba(0,0,0,0.7); }
+.footer{
+    margin:24px auto 0; width:fit-content; color:white; font-size:14px; font-weight:bold;
+    background:rgba(0,0,0,0.4); padding:8px 12px; border-radius:6px;
+    text-shadow:0 2px 6px rgba(0,0,0,0.7);
+}
 /* séparateur OU */
 .or-sep { text-align:center; font-weight:700; color:#666; margin:8px 0 -4px; letter-spacing:.5px; }
 .or-sep::before, .or-sep::after {
@@ -60,8 +64,10 @@ button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; f
 }
 </style>
 </head>
+
 <body>
 <h1>Calcul Durée Rouleau</h1>
+
 <div class="container">
     <label>Choisissez le type :</label>
     <select id="typeChoix" onchange="toggleSections()">
@@ -128,7 +134,7 @@ button{ padding:11px; width:100%; border:none; border-radius:6px; color:white; f
 
     <button class="btn-reset" onclick="resetAll()">Réinitialiser</button>
 
-    <!-- INFO PWA (sans la phrase à supprimer) -->
+    <!-- INFO PWA -->
     <p class="help-note">
         Pour une utilisation sur téléphone :<br>
         • <b>Android (Chrome)</b> → Installer l'app (Ajouter à l’écran d’accueil)<br>
@@ -163,18 +169,29 @@ function saveState(){
   };
   localStorage.setItem('outilDuree', JSON.stringify(st));
 }
+
 function loadState(){
   const raw = localStorage.getItem('outilDuree');
   if(!raw) return;
   const st = JSON.parse(raw);
-  Object.keys(st.inputs).forEach(id=>{ if(document.getElementById(id)) document.getElementById(id).value = st.inputs[id]; });
+
+  Object.keys(st.inputs).forEach(id=>{
+    if(document.getElementById(id))
+      document.getElementById(id).value = st.inputs[id];
+  });
+
   timers = st.timers;
+
   const now = new Date();
   for(const t of ['feuillard','pieces']){
     if(timers[t].end){
       timers[t].end = new Date(timers[t].end);
-      if(timers[t].end > now){ showTimerBlock(t); startCountdown(t, timers[t].end); }
-      else { timers[t].end = null; }
+      if(timers[t].end > now){
+        showTimerBlock(t);
+        startCountdown(t, timers[t].end);
+      } else {
+        timers[t].end = null;
+      }
     }
   }
 }
@@ -187,94 +204,145 @@ function toggleSections(){
 }
 function pad2(n){ return n.toString().padStart(2,'0'); }
 function nowHHMM(){ const d=new Date(); return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
-function parseTimeToDate(hhmm){ const [h,m]=hhmm.split(':').map(Number); const d=new Date(); d.setHours(h,m,0,0); return d; }
+function parseTimeToDate(hhmm){
+  const [h,m]=hhmm.split(':').map(Number);
+  const d=new Date(); d.setHours(h,m,0,0); return d;
+}
 function addMin(date,min){ return new Date(date.getTime()+min*60000); }
 function formatHHMM(d){ return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
 
 // =================== Timer =====================
-function showTimerBlock(t){ document.getElementById(t==='feuillard'?'timeFeuillard':'timePieces').style.display='block'; }
+function showTimerBlock(t){
+    document.getElementById(t==='feuillard'?'timeFeuillard':'timePieces').style.display='block';
+}
 function startCountdown(t, end){
   clearInterval(timers[t].interval);
   timers[t].end = end;
+
   const el = document.getElementById(t==='feuillard'?'countdownFeuillard':'countdownPieces');
+
   function tick(){
     const now = new Date();
     const diff = Math.max(0, end - now);
     const m = Math.floor(diff/60000);
     const s = Math.floor((diff%60000)/1000);
     el.textContent = `Temps restant : ${pad2(m)} min ${pad2(s)} s`;
-    if(diff<=0){ clearInterval(timers[t].interval); el.textContent='Terminé.'; }
+
+    if(diff<=0){
+      clearInterval(timers[t].interval);
+      el.textContent='Terminé.';
+    }
     saveState();
   }
   tick();
   timers[t].interval = setInterval(tick, 1000);
 }
 
-// départ immédiat : met l'heure actuelle puis démarre
+// départ immédiat
 function departMaintenant(t){
   const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
   input.value = nowHHMM();
   validerHeure(t);
 }
 
-// valider après saisie manuelle (relance timer)
+// valider après saisie manuelle
 function validerHeure(t){
   if(!timers[t].durationMin){ alert('Calculez d\'abord la durée.'); return; }
   const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
+
   if(!input.value){ alert('Heure de début manquante'); return; }
+
   const start = parseTimeToDate(input.value);
   const end = addMin(start, timers[t].durationMin);
+
   const out = document.getElementById(t==='feuillard'?'endTimeFeuillard':'endTimePieces');
-  out.textContent = (t==='feuillard'? 'Si le rouleau':'Si la bobine') + ` commence à ${formatHHMM(start)}, elle terminera à ${formatHHMM(end)}.`;
-  showTimerBlock(t); startCountdown(t, end);
+  out.textContent =
+    (t==='feuillard'? 'Si le rouleau':'Si la bobine') +
+    ` commence à ${formatHHMM(start)}, elle terminera à ${formatHHMM(end)}.`;
+
+  showTimerBlock(t);
+  startCountdown(t, end);
 }
 
-// preview fin sans démarrer le timer
+// preview de fin
 function previewFin(t){
   const dur = timers[t].durationMin; if(!dur) return;
   const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
   if(!input.value) return;
-  const start = parseTimeToDate(input.value); const end = addMin(start, dur);
+
+  const start = parseTimeToDate(input.value);
+  const end = addMin(start, dur);
+
   const out = document.getElementById(t==='feuillard'?'endTimeFeuillard':'endTimePieces');
-  out.textContent = (t==='feuillard'? 'Si le rouleau':'Si la bobine') + ` commence à ${formatHHMM(start)}, elle terminera à ${formatHHMM(end)}.`;
+  out.textContent =
+    (t==='feuillard'? 'Si le rouleau':'Si la bobine') +
+    ` commence à ${formatHHMM(start)}, elle terminera à ${formatHHMM(end)}.`;
+
   clearInterval(timers[t].interval);
   document.getElementById(t==='feuillard'?'countdownFeuillard':'countdownPieces').textContent = '';
 }
 
 // =================== Calculs =====================
 function calculFeuillard(){
-  const pm = parseFloat(poidsMetre.value); const pr = parseFloat(poidsRouleau.value); const v = parseFloat(vitesseFeuillard.value);
+  const pm = parseFloat(poidsMetre.value);
+  const pr = parseFloat(poidsRouleau.value);
+  const v  = parseFloat(vitesseFeuillard.value);
+
   const out = resultFeuillard;
+
   if(pm>0 && pr>0 && v>0){
-    const kgpm = pm/1000; const dureeH = pr/(kgpm*v); const minTotal = Math.round(dureeH*60);
+    const kgpm = pm/1000;
+    const dureeH = pr/(kgpm*v);
+    const minTotal = Math.round(dureeH*60);
+
     timers.feuillard.durationMin = minTotal;
-    out.className = 'result success';
+    out.className='result success';
     out.textContent = `Durée : ${Math.floor(minTotal/60)} h ${minTotal%60} min`;
-    startTimeFeuillard.value = nowHHMM(); previewFin('feuillard');
+
+    startTimeFeuillard.value = nowHHMM();
+    previewFin('feuillard');
     startTimeFeuillard.oninput = ()=>validerHeure('feuillard');
-    timeFeuillard.style.display='block'; saveState();
-  }else{
-    out.className='result error'; out.textContent='Champs incorrects.';
+    timeFeuillard.style.display='block';
+    saveState();
+  } else {
+    out.className='result error';
+    out.textContent='Champs incorrects.';
   }
 }
+
 function calculPieces(){
-  const nb = parseFloat(nbPieces.value); const ppp = parseFloat(piecesParPas.value); const tm = parseFloat(taillePas.value); const v = parseFloat(vitessePieces.value);
+  const nb = parseFloat(nbPieces.value);
+  const ppp = parseFloat(piecesParPas.value);
+  const tm = parseFloat(taillePas.value);
+  const v  = parseFloat(vitessePieces.value);
+
   const out = resultPieces;
+
   if(nb>0 && ppp>0 && tm>0 && v>0){
-    const tmM = tm/1000; const dureeH = (nb*tmM)/(ppp*v); const minTotal = Math.round(dureeH*60);
+    const tmM = tm/1000;
+    const dureeH = (nb*tmM)/(ppp*v);
+    const minTotal = Math.round(dureeH*60);
+
     timers.pieces.durationMin = minTotal;
-    out.className = 'result success';
+    out.className='result success';
     out.textContent = `Durée : ${Math.floor(minTotal/60)} h ${minTotal%60} min`;
-    startTimePieces.value = nowHHMM(); previewFin('pieces');
+
+    startTimePieces.value = nowHHMM();
+    previewFin('pieces');
     startTimePieces.oninput = ()=>validerHeure('pieces');
-    timePieces.style.display='block'; saveState();
-  }else{
-    out.className='result error'; out.textContent='Champs incorrects.';
+    timePieces.style.display='block';
+    saveState();
+  } else {
+    out.className='result error';
+    out.textContent='Champs incorrects.';
   }
 }
 
 // =================== Reset =====================
-function resetAll(){ localStorage.removeItem('outilDuree'); location.reload(); }
+function resetAll(){
+  localStorage.removeItem('outilDuree');
+  location.reload();
+}
 
 // init
 window.addEventListener('load', loadState);
@@ -284,6 +352,7 @@ if('serviceWorker' in navigator){
   window.addEventListener('load', async () => {
     try {
       const reg = await navigator.serviceWorker.register('./sw.js?v=3');
+
       reg.addEventListener('updatefound', () => {
         const nw = reg.installing; if(!nw) return;
         nw.addEventListener('statechange', () => {
@@ -292,14 +361,21 @@ if('serviceWorker' in navigator){
           }
         });
       });
+
       let refreshing=false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if(refreshing) return; refreshing=true; location.reload();
+        if(refreshing) return;
+        refreshing=true;
+        location.reload();
       });
+
       if (reg && reg.update) reg.update();
-    } catch(e){ console.error('SW registration failed', e); }
+    } catch(e){
+      console.error('SW registration failed', e);
+    }
   });
 }
 </script>
+
 </body>
 </html>
