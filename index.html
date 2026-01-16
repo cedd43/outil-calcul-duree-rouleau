@@ -215,55 +215,61 @@ function saveState(){
 }
 
 
+
 function loadState(){
   const raw = localStorage.getItem('outilDuree');
   const typeSelect = document.getElementById('typeChoix');
 
-  // Rien enregistré → tout masqué
+  // --- 1) AUCUNE SAUVEGARDE → TOUT VIDE ---
   if(!raw){
+    typeSelect.value = "";
     document.getElementById('normalUI').style.display = 'block';
     document.getElementById('bigTimerUI').style.display = 'none';
     document.getElementById('sectionFeuillard').style.display='none';
     document.getElementById('sectionPieces').style.display='none';
     document.getElementById('inputsFeuillard').classList.add('collapsed');
     document.getElementById('inputsPieces').classList.add('collapsed');
-    typeSelect.value = "";
     return;
   }
 
   const st = JSON.parse(raw);
 
-  // Restaure inputs
+  // --- 2) RESTAURE LES INPUTS MAIS PAS LE TYPE ---
   if(st.inputs){
     Object.keys(st.inputs).forEach(id=>{
-      if(document.getElementById(id)) document.getElementById(id).value = st.inputs[id];
+      if(document.getElementById(id))
+        document.getElementById(id).value = st.inputs[id];
     });
   }
 
   timers = st.timers || timers;
 
-  // Restaure type
-  if(st.inputs.typeChoix){
-    typeSelect.value = st.inputs.typeChoix;
-  } else {
-    typeSelect.value = "";
-  }
+  // Détecter si un timer est actif
+  const hasTimer =
+      (timers.feuillard && timers.feuillard.end) ||
+      (timers.pieces && timers.pieces.end);
 
-  // AUCUN TIMER → tout masqué tant qu'un type n’est pas choisi
-  if(!timers.feuillard.end && !timers.pieces.end){
-    document.getElementById('bigTimerUI').style.display='none';
-    document.getElementById('normalUI').style.display='block';
+  // --- 3) SI AUCUN TIMER → TYPE = VIDE OBLIGATOIRE ---
+  if(!hasTimer){
+      typeSelect.value = "";  // <-- Réinitialisation forcée
 
-    if(typeSelect.value === ""){
+      // Masquer toutes les sections
+      document.getElementById('bigTimerUI').style.display='none';
+      document.getElementById('normalUI').style.display='block';
       document.getElementById('sectionFeuillard').style.display='none';
       document.getElementById('sectionPieces').style.display='none';
+
+      // Inputs invisibles tant qu'un type n'est pas choisi
       document.getElementById('inputsFeuillard').classList.add('collapsed');
       document.getElementById('inputsPieces').classList.add('collapsed');
-      return;
-    }
+
+      return;  // <-- On sort : rien d'autre à faire
   }
 
-  // TIMER ACTIF ?
+  // --- 4) SI TIMER ACTIF → RESTAURER LE TYPE D’ORIGINE ---
+  typeSelect.value = st.inputs.typeChoix || "";
+
+  // TRAITEMENT DU TIMER
   const now = new Date();
   let activeType = null;
 
@@ -281,6 +287,7 @@ function loadState(){
     }
   });
 
+  // --- 5) MODE TIMER vs MODE NORMAL ---
   if(activeType){
     enterBigTimerMode(activeType);
   } else {
