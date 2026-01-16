@@ -214,36 +214,59 @@ function saveState(){
   localStorage.setItem('outilDuree', JSON.stringify(st));
 }
 
+
 function loadState(){
   const raw = localStorage.getItem('outilDuree');
-  if(!raw) {
-    // rien -> tout masqué tant qu'on ne choisit pas un type
+  const typeSelect = document.getElementById('typeChoix');
+
+  // Rien enregistré → tout masqué
+  if(!raw){
+    document.getElementById('normalUI').style.display = 'block';
+    document.getElementById('bigTimerUI').style.display = 'none';
     document.getElementById('sectionFeuillard').style.display='none';
     document.getElementById('sectionPieces').style.display='none';
+    document.getElementById('inputsFeuillard').classList.add('collapsed');
+    document.getElementById('inputsPieces').classList.add('collapsed');
+    typeSelect.value = "";
     return;
   }
+
   const st = JSON.parse(raw);
 
+  // Restaure inputs
   if(st.inputs){
     Object.keys(st.inputs).forEach(id=>{
       if(document.getElementById(id)) document.getElementById(id).value = st.inputs[id];
     });
   }
+
   timers = st.timers || timers;
 
-  // Forcer inputs masqués si aucun timer et pas de choix
-  if (!timers.feuillard.end && !timers.pieces.end) {
-    document.getElementById('inputsFeuillard').classList.add('collapsed');
-    document.getElementById('inputsPieces').classList.add('collapsed');
+  // Restaure type
+  if(st.inputs.typeChoix){
+    typeSelect.value = st.inputs.typeChoix;
+  } else {
+    typeSelect.value = "";
   }
 
-  const typeSelect = document.getElementById('typeChoix');
-  if(st.inputs && st.inputs.typeChoix) typeSelect.value = st.inputs.typeChoix;
-  toggleSections(); // affiche la bonne section si un type est défini
+  // AUCUN TIMER → tout masqué tant qu'un type n’est pas choisi
+  if(!timers.feuillard.end && !timers.pieces.end){
+    document.getElementById('bigTimerUI').style.display='none';
+    document.getElementById('normalUI').style.display='block';
 
-  // Reprise timer si encore valide
+    if(typeSelect.value === ""){
+      document.getElementById('sectionFeuillard').style.display='none';
+      document.getElementById('sectionPieces').style.display='none';
+      document.getElementById('inputsFeuillard').classList.add('collapsed');
+      document.getElementById('inputsPieces').classList.add('collapsed');
+      return;
+    }
+  }
+
+  // TIMER ACTIF ?
   const now = new Date();
   let activeType = null;
+
   ['feuillard','pieces'].forEach(t=>{
     if(timers[t] && timers[t].end){
       const end = new Date(timers[t].end);
@@ -251,26 +274,39 @@ function loadState(){
         activeType = t;
         timers[t].end = end;
         showTimerBlock(t);
-        startCountdown(t, end);
+        startCountdown(t,end);
       } else {
         timers[t].end = null;
       }
     }
   });
 
-  if(activeType && SHOW_ONLY_TIME_ON_LOAD){
-    // Basculer en mode big-timer
+  if(activeType){
     enterBigTimerMode(activeType);
+  } else {
+    exitBigTimerMode();
   }
 }
 
+
 /* ===== UI ===== */
+
 function onTypeChange(){
-  // reviennent en mode normal si l'utilisateur choisit un type
+  // L’utilisateur fait un choix → quitter bigTimer
   exitBigTimerMode();
+
+  const type = document.getElementById('typeChoix').value;
+
+  if(type === ""){
+    document.getElementById('sectionFeuillard').style.display='none';
+    document.getElementById('sectionPieces').style.display='none';
+    return;
+  }
+
   toggleSections();
   saveState();
 }
+
 
 function toggleSections(){
   const c = document.getElementById('typeChoix').value;
@@ -299,10 +335,16 @@ function enterBigTimerMode(activeType){
   updateBigTimerFrom(activeType);
 }
 
+
 function exitBigTimerMode(){
   document.getElementById('bigTimerUI').style.display = 'none';
-  document.getElementById('normalUI').style.display   = 'block';
+  document.getElementById('normalUI').style.display = 'block';
+
+  // Réactivations propres
+  document.getElementById('inputsFeuillard').classList.remove('collapsed');
+  document.getElementById('inputsPieces').classList.remove('collapsed');
 }
+
 
 function updateBigTimerFrom(type){
   const elSmall = document.getElementById(type==='feuillard'?'countdownFeuillard':'countdownPieces');
