@@ -1,5 +1,5 @@
 
-const SW_VERSION='v7';
+const SW_VERSION='v8';
 const CACHE=`outil-duree-${SW_VERSION}`;
 const ASSETS=['./','./index.html','./manifest.webmanifest?v=4','./bg-pem.jpg','./logo-192.png','./logo-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));});
