@@ -2,182 +2,163 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Calcul Durée Rouleau</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calcul Durée Rouleau</title>
 
-<!-- PWA -->
-<link rel="manifest" href="manifest.webmanifest?v=10">
-<link rel="apple-touch-icon" href="logo-192.png">
-<meta name="theme-color" content="#0b0b0b">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest?v=10">
+  <link rel="apple-touch-icon" href="logo-192.png">
+  <meta name="theme-color" content="#0b0b0b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-<style>
-:root{
-    --bg-overlay: 0.45;
-    --card-bg: 0.92;
-    --success: #28a745;
-    --primary: #007bff;
-    --start: #2e7d32;
-    --start-hover: #1b5e20;
-}
-html, body { height: 100%; }
-body{
-    margin:0; font-family:Arial, sans-serif; background:#0b0b0b;
-    background-image:
+  <style>
+    :root{
+      --bg-overlay: 0.45;
+      --card-bg: 0.92;
+      --success: #28a745;
+      --primary: #007bff;
+      --start: #2e7d32;
+      --start-hover: #1b5e20;
+    }
+    html, body { height: 100%; }
+    body{
+      margin:0; font-family:Arial, sans-serif; background:#0b0b0b;
+      background-image:
         linear-gradient(rgba(0,0,0,var(--bg-overlay)), rgba(0,0,0,var(--bg-overlay))),
         url('bg-pem.jpg');
-    background-size:cover; background-position:center; background-repeat:no-repeat; background-attachment:fixed;
-    padding:20px;
-}
-.container{
-    max-width:560px; margin:0 auto; background:rgba(255,255,255,var(--card-bg));
-    padding:22px; border-radius:10px; box-shadow:0 10px 28px rgba(0,0,0,0.35); backdrop-filter:blur(2px);
-}
-h1{ text-align:center; color:white; text-shadow:0 2px 6px rgba(0,0,0,0.6); }
+      background-size:cover; background-position:center; background-repeat:no-repeat; background-attachment:fixed;
+      padding:20px;
+    }
+    .container{
+      max-width:560px; margin:0 auto; background:rgba(255,255,255,var(--card-bg));
+      padding:22px; border-radius:10px; box-shadow:0 10px 28px rgba(0,0,0,0.35); backdrop-filter:blur(2px);
+    }
+    h1{ text-align:center; color:white; text-shadow:0 2px 6px rgba(0,0,0,0.6); }
+    label{ display:block; margin-top:10px; color:#222 }
+    input,select{
+      width:100%; padding:8px; margin-top:5px; border-radius:6px; border:1px solid #cfd4dc;
+    }
+    input::placeholder { color:#999; font-style:italic; }
+    button{
+      padding:11px; width:100%; border:none; border-radius:6px;
+      color:white; font-weight:bold; cursor:pointer; margin-top:14px;
+    }
+    .btn-primary{ background:var(--primary); }
+    .btn-primary:hover{ background:#0056b3; }
+    .btn-start{ background:var(--start); font-size:1.05rem; }
+    .btn-start:hover{ background:var(--start-hover); }
+    .btn-reset{ background:#6c757d; }
+    .btn-reset:hover{ background:#555; }
+    .result{ margin-top:12px; font-weight:bold; }
+    .error{ color:#d93025; font-weight:bold; }
+    .result.success{ color:var(--success); }
+    .section{ display:none; }
+    .inputs.collapsed { display:none !important; }
 
-label{ display:block; margin-top:10px; color:#222 }
-input,select{
-    width:100%; padding:8px; margin-top:5px; border-radius:6px; border:1px solid #cfd4dc;
-}
-input::placeholder { color:#999; font-style:italic; }
-
-button{
-    padding:11px; width:100%; border:none; border-radius:6px;
-    color:white; font-weight:bold; cursor:pointer; margin-top:14px;
-}
-.btn-primary{ background:var(--primary); }
-.btn-primary:hover{ background:#0056b3; }
-.btn-start{ background:var(--start); font-size:1.05rem; }
-.btn-start:hover{ background:var(--start-hover); }
-.btn-reset{ background:#6c757d; }
-.btn-reset:hover{ background:#555; }
-
-.result{ margin-top:12px; font-weight:bold; }
-.error{ color:#d93025; font-weight:bold; }
-.result.success{ color:var(--success); }
-
-.section{ display:none; }
-.inputs.collapsed { display:none !important; }
-
-/* Mode big timer (accueil avec timer en cours) */
-.big-container{
-    margin-top:20px;
-    background:rgba(0,0,0,0.65);
-    padding:22px;
-    border-radius:12px;
-}
-.big-timer{
-    font-size:2.2rem;
-    color:#ff8c00;
-    font-weight:900;
-    text-align:center;
-    margin-bottom:18px;
-}
-.big-btn{
-    background:#ff8c00;
-    font-size:1.2rem;
-    margin-top:12px;
-}
-.big-btn:hover{ background:#e07a00; }
-
-.or-sep{
-  text-align:center; font-weight:700; color:#666; margin:8px 0 -4px;
-}
-.or-sep::before, .or-sep::after{
-  content:""; display:inline-block; width:30%; height:1px; background:#bbb;
-  vertical-align:middle; margin:0 8px;
-}
-
-.help-note{ margin-top:12px; font-size:12px; color:#444; }
-.footer{
-    margin:24px auto 0; width:fit-content;
-    color:white; font-size:14px; font-weight:bold;
-    background:rgba(0,0,0,0.4); padding:8px 12px; border-radius:6px;
-    text-shadow:0 2px 6px rgba(0,0,0,0.7);
-}
-</style>
+    /* Mode big timer (accueil avec timer en cours) */
+    .big-container{
+      margin-top:20px;
+      background:rgba(0,0,0,0.65);
+      padding:22px;
+      border-radius:12px;
+    }
+    .big-timer{
+      font-size:2.2rem;
+      color:#ff8c00;
+      font-weight:900;
+      text-align:center;
+      margin-bottom:18px;
+    }
+    .big-btn{
+      background:#ff8c00;
+      font-size:1.2rem;
+      margin-top:12px;
+    }
+    .big-btn:hover{ background:#e07a00; }
+    .or-sep{
+      text-align:center; font-weight:700; color:#666; margin:8px 0 -4px;
+    }
+    .or-sep::before, .or-sep::after{
+      content:""; display:inline-block; width:30%; height:1px; background:#bbb;
+      vertical-align:middle; margin:0 8px;
+    }
+    .help-note{ margin-top:12px; font-size:12px; color:#444; }
+    .footer{
+      margin:24px auto 0; width:fit-content;
+      color:white; font-size:14px; font-weight:bold;
+      background:rgba(0,0,0,0.4); padding:8px 12px; border-radius:6px;
+      text-shadow:0 2px 6px rgba(0,0,0,0.7);
+    }
+  </style>
 </head>
-
 <body>
-<h1>Calcul Durée Rouleau</h1>
+  <h1>Calcul Durée Rouleau</h1>
 
-<div class="container" id="mainContainer">
+  <div class="container" id="mainContainer">
+    <!-- Sélecteur (toujours visible pour sortir du big timer) -->
+    <label>Choisissez le type :</label>
+    <select id="typeChoix" onchange="onTypeChange()">
+      <option value="">-- Sélectionnez --</option>
+      <option value="feuillard">Feuillard</option>
+      <option value="pieces">Pièces découpées</option>
+    </select>
 
-  <!-- Sélecteur (toujours visible pour sortir du big timer) -->
-  <label>Choisissez le type :</label>
-  <select id="typeChoix" onchange="onTypeChange()">
-    <option value="">-- Sélectionnez --</option>
-    <option value="feuillard">Feuillard</option>
-    <option value="pieces">Pièces découpées</option>
-  </select>
-
-  <!-- UI Normale -->
-  <div id="normalUI">
-
-    <!-- FEUILLARD -->
-    <div id="sectionFeuillard" class="section">
-      <h2>Feuillard</h2>
-
-      <div class="inputs" id="inputsFeuillard">
-        <label>Poids du rouleau (kg):</label>
-        <input type="number" id="poidsRouleau" placeholder="ex : 1200" step="10">
-
-        <label>Poids par mètre (g/m):</label>
-        <input type="number" id="poidsMetre" placeholder="ex : 150" step="1">
-
-        <label>Vitesse (m/h):</label>
-        <input type="number" id="vitesseFeuillard" placeholder="ex : 200" step="5">
-
-        <button class="btn-primary" onclick="calculFeuillard()">Calculer la durée</button>
-        <div class="result" id="resultFeuillard"></div>
-      </div>
-
-      <div id="timeFeuillard" class="time-block" style="display:none;">
-        <div class="time-inline">
-          <label><b>Choisir l'heure de début (du rouleau)</b> :</label>
-          <input type="time" id="startTimeFeuillard">
+    <!-- UI Normale -->
+    <div id="normalUI">
+      <!-- FEUILLARD -->
+      <div id="sectionFeuillard" class="section">
+        <h2>Feuillard</h2>
+        <div class="inputs" id="inputsFeuillard">
+          <label>Poids du rouleau (kg):</label>
+          <input type="number" id="poidsRouleau" placeholder="ex : 1200" step="10">
+          <label>Poids par mètre (g/m):</label>
+          <input type="number" id="poidsMetre" placeholder="ex : 150" step="1">
+          <label>Vitesse (m/h):</label>
+          <input type="number" id="vitesseFeuillard" placeholder="ex : 200" step="5">
+          <button class="btn-primary" onclick="calculFeuillard()">Calculer la durée</button>
+          <div class="result" id="resultFeuillard"></div>
         </div>
-        <div class="or-sep">OU</div>
-        <button class="btn-start" onclick="departMaintenant('feuillard')">Départ rouleau</button>
 
-        <div class="countdown" id="countdownFeuillard"></div>
-        <div class="result" id="endTimeFeuillard"></div>
-      </div>
-    </div>
-
-    <!-- PIECES -->
-    <div id="sectionPieces" class="section">
-      <h2>Pièces découpées</h2>
-
-      <div class="inputs" id="inputsPieces">
-        <label>Nombre total de pièces :</label>
-        <input type="number" id="nbPieces" placeholder="ex : 35000" step="1000">
-
-        <label>Nombre de pièces par pas :</label>
-        <input type="number" id="piecesParPas" placeholder="ex : 1" step="1">
-
-        <label>Taille du pas (mm) :</label>
-        <input type="number" id="taillePas" placeholder="ex : 24" step="1">
-
-        <label>Vitesse (m/h) :</label>
-        <input type="number" id="vitessePieces" placeholder="ex : 180" step="5">
-
-        <button class="btn-primary" onclick="calculPieces()">Calculer la durée</button>
-        <div class="result" id="resultPieces"></div>
-      </div>
-
-      <div id="timePieces" class="time-block" style="display:none;">
-        <div class="time-inline">
-          <label><b>Choisir l'heure de début (de la bobine)</b> :</label>
-          <input type="time" id="startTimePieces">
+        <div id="timeFeuillard" class="time-block" style="display:none;">
+          <div class="time-inline">
+            <label><b>Choisir l'heure de début (du rouleau)</b> :</label>
+            <input type="time" id="startTimeFeuillard">
+          </div>
+          <div class="or-sep">OU</div>
+          <button class="btn-start" onclick="departMaintenant('feuillard')">Départ rouleau</button>
+          <div class="countdown" id="countdownFeuillard"></div>
+          <div class="result" id="endTimeFeuillard"></div>
         </div>
-        <div class="or-sep">OU</div>
-        <button class="btn-start" onclick="departMaintenant('pieces')">Départ bobine</button>
+      </div>
 
-        <div class="countdown" id="countdownPieces"></div>
-        <div class="result" id="endTimePieces"></div>
+      <!-- PIECES -->
+      <div id="sectionPieces" class="section">
+        <h2>Pièces découpées</h2>
+        <div class="inputs" id="inputsPieces">
+          <label>Nombre total de pièces :</label>
+          <input type="number" id="nbPieces" placeholder="ex : 35000" step="1000">
+          <label>Nombre de pièces par pas :</label>
+          <input type="number" id="piecesParPas" placeholder="ex : 1" step="1">
+          <label>Taille du pas (mm) :</label>
+          <input type="number" id="taillePas" placeholder="ex : 24" step="1">
+          <label>Vitesse (m/h) :</label>
+          <input type="number" id="vitessePieces" placeholder="ex : 180" step="5">
+          <button class="btn-primary" onclick="calculPieces()">Calculer la durée</button>
+          <div class="result" id="resultPieces"></div>
+        </div>
+
+        <div id="timePieces" class="time-block" style="display:none;">
+          <div class="time-inline">
+            <label><b>Choisir l'heure de début (de la bobine)</b> :</label>
+            <input type="time" id="startTimePieces">
+          </div>
+          <div class="or-sep">OU</div>
+          <button class="btn-start" onclick="departMaintenant('pieces')">Départ bobine</button>
+          <div class="countdown" id="countdownPieces"></div>
+          <div class="result" id="endTimePieces"></div>
+        </div>
       </div>
     </div>
 
@@ -198,387 +179,454 @@ button{
     </div>
   </div>
 
-  <div class="footer">outil libre d'accès – C.Duffner – AST PEM – V2.5 – 17/01/26</div>
-</div>
+  <div class="footer">outil libre d'accès – C.Duffner – AST PEM – V2.6 – 19/01/26</div>
 
-<script>
-//========================================================
-// OPTIONS
-//========================================================
-const SHOW_ONLY_TIME_ON_LOAD = true;
+  <script>
+  //========================================================
+  // OPTIONS
+  //========================================================
+  const SHOW_ONLY_TIME_ON_LOAD = true; // (placeholder si tu veux l'utiliser plus tard)
 
-let timers = {
-  feuillard: { end:null, durationMin:null, interval:null },
-  pieces:    { end:null, durationMin:null, interval:null }
-};
-let bigTimerType = null; // type actuellement affiché en big timer
+  let timers = {
+    feuillard: { end:null, durationMin:null, interval:null },
+    pieces:    { end:null, durationMin:null, interval:null }
+  };
 
-//========================================================
-// PERSISTENCE
-//========================================================
-function saveState(){
-  const st = {
-    inputs:{
+  let bigTimerType = null; // type actuellement affiché en big timer
+
+  //========================================================
+  // PERSISTENCE
+  //========================================================
+  function saveState(){
+    const inputs = {
       typeChoix: document.getElementById('typeChoix').value,
       poidsRouleau: (document.getElementById('poidsRouleau')||{}).value || "",
-      poidsMetre: (document.getElementById('poidsMetre')||{}).value || "",
+      poidsMetre:   (document.getElementById('poidsMetre')||{}).value || "",
       vitesseFeuillard: (document.getElementById('vitesseFeuillard')||{}).value || "",
-      nbPieces: (document.getElementById('nbPieces')||{}).value || "",
+      nbPieces:     (document.getElementById('nbPieces')||{}).value || "",
       piecesParPas: (document.getElementById('piecesParPas')||{}).value || "",
-      taillePas: (document.getElementById('taillePas')||{}).value || "",
-      vitessePieces: (document.getElementById('vitessePieces')||{}).value || "",
+      taillePas:    (document.getElementById('taillePas')||{}).value || "",
+      vitessePieces:(document.getElementById('vitessePieces')||{}).value || "",
       startTimeFeuillard: (document.getElementById('startTimeFeuillard')||{}).value || "",
-      startTimePieces: (document.getElementById('startTimePieces')||{}).value || ""
-    },
-    timers
-  };
-  localStorage.setItem('outilDuree', JSON.stringify(st));
-}
+      startTimePieces:    (document.getElementById('startTimePieces')||{}).value || ""
+    };
 
-//========================================================
-// CHARGEMENT INITIAL
-//========================================================
-function loadState(){
-  const raw = localStorage.getItem('outilDuree');
-  const typeSelect = document.getElementById('typeChoix');
+    // on ne sauvegarde PAS 'interval' (volatile)
+    const timersToSave = {
+      feuillard: {
+        end: timers.feuillard.end ? timers.feuillard.end.toISOString() : null,
+        durationMin: timers.feuillard.durationMin || null
+      },
+      pieces: {
+        end: timers.pieces.end ? timers.pieces.end.toISOString() : null,
+        durationMin: timers.pieces.durationMin || null
+      }
+    };
 
-  // 1) Première ouverture : tout vide
-  if(!raw){
-    typeSelect.value = "";
-    hideAllSections();
-    return;
+    localStorage.setItem('outilDuree', JSON.stringify({ inputs, timers: timersToSave }));
   }
 
-  const st = JSON.parse(raw);
+  //========================================================
+  // CHARGEMENT INITIAL
+  //========================================================
+  function loadState(){
+    const raw = localStorage.getItem('outilDuree');
+    const typeSelect = document.getElementById('typeChoix');
 
-  // Restaurer les champs (sans forcer le type)
-  if(st.inputs){
-    Object.keys(st.inputs).forEach(id=>{
-      if(document.getElementById(id))
-        document.getElementById(id).value = st.inputs[id];
-    });
-  }
-  timers = st.timers || timers;
+    // 1) Première ouverture : tout vide
+    if(!raw){
+      typeSelect.value = "";
+      hideAllSections();
+      return;
+    }
 
-  // 2) Timer actif ?
-  const now = new Date();
-  let activeType = null;
-  ['feuillard','pieces'].forEach(t=>{
-    if(timers[t] && timers[t].end){
-      const end = new Date(timers[t].end);
-      if(end > now){
-        timers[t].end = end;
+    const st = JSON.parse(raw);
+
+    // Restaurer les champs
+    if(st.inputs){
+      Object.keys(st.inputs).forEach(id=>{
+        if(document.getElementById(id))
+          document.getElementById(id).value = st.inputs[id];
+      });
+    }
+
+    // Reconstitue timers sans 'interval'
+    timers = {
+      feuillard: { end:null, durationMin:null, interval:null },
+      pieces:    { end:null, durationMin:null, interval:null }
+    };
+
+    if(st.timers){
+      ['feuillard','pieces'].forEach(t=>{
+        const rec = st.timers[t] || {};
+        timers[t].durationMin = rec.durationMin || null;
+        if(rec.end){
+          const end = new Date(rec.end);
+          if(end > new Date()){
+            timers[t].end = end;
+          }
+        }
+      });
+    }
+
+    // 2) Timer actif ?
+    const now = new Date();
+    let activeType = null;
+    ['feuillard','pieces'].forEach(t=>{
+      if(timers[t].end && timers[t].end > now){
         activeType = t;
       } else {
         timers[t].end = null;
       }
-    }
-  });
+    });
 
-  // 3) Aucun timer → "Sélectionnez" et rien à l'écran
-  if(!activeType){
+    // 3) Aucun timer → "Sélectionnez" et rien à l'écran
+    if(!activeType){
+      typeSelect.value = "";
+      hideAllSections();
+      return;
+    }
+
+    // 4) Timer actif → big timer + minuterie en cours (sélecteur RESTE "Sélectionnez")
     typeSelect.value = "";
-    hideAllSections();
-    return;
+    bigTimerType = activeType;
+    showTimerBlock(activeType);
+    startCountdown(activeType, timers[activeType].end);
+    enterBigTimerMode(activeType);
+
+    // S'assure que changer l'heure revalide bien
+    const stF = document.getElementById('startTimeFeuillard');
+    const stP = document.getElementById('startTimePieces');
+    if (stF) stF.oninput = ()=>validerHeure('feuillard');
+    if (stP) stP.oninput = ()=>validerHeure('pieces');
   }
 
-  // 4) Timer actif → big timer + minuterie en cours (sélecteur RESTE "Sélectionnez")
-  typeSelect.value = "";
-  bigTimerType = activeType;
-  showTimerBlock(activeType);
-  startCountdown(activeType, timers[activeType].end);
-  enterBigTimerMode(activeType);
-}
-
-//========================================================
-// UI
-//========================================================
-function hideAllSections(){
-  document.getElementById('bigTimerUI').style.display='none';
-  document.getElementById('normalUI').style.display='block';
-
-  document.getElementById('sectionFeuillard').style.display='none';
-  document.getElementById('inputsFeuillard').classList.add('collapsed');
-
-  document.getElementById('sectionPieces').style.display='none';
-  document.getElementById('inputsPieces').classList.add('collapsed');
-}
-
-// Sélection d'un type (sortie big timer si besoin)
-function onTypeChange(){
-  exitBigTimerMode();
-  const type = document.getElementById('typeChoix').value;
-
-  if(type === ""){
-    hideAllSections();
-    return;
+  //========================================================
+  // UI
+  //========================================================
+  function hideAllSections(){
+    document.getElementById('bigTimerUI').style.display='none';
+    document.getElementById('normalUI').style.display='block';
+    document.getElementById('sectionFeuillard').style.display='none';
+    document.getElementById('inputsFeuillard').classList.add('collapsed');
+    document.getElementById('sectionPieces').style.display='none';
+    document.getElementById('inputsPieces').classList.add('collapsed');
   }
 
-  toggleSections();
-
-  // si un timer est en cours pour ce type => l'afficher en normal
-  if (timers[type] && timers[type].end) {
-    showTimerBlock(type);
-    if (!timers[type].interval) { // (iOS peut geler l’intervalle)
-      startCountdown(type, timers[type].end);
+  // Sélection d'un type (sortie big timer si besoin)
+  function onTypeChange(){
+    exitBigTimerMode();
+    const type = document.getElementById('typeChoix').value;
+    if(type === ""){
+      hideAllSections();
+      return;
     }
+    toggleSections();
+
+    // si un timer est en cours pour ce type => l'afficher en normal
+    if (timers[type] && timers[type].end) {
+      showTimerBlock(type);
+      if (!timers[type].interval) { // (iOS peut geler l’intervalle)
+        startCountdown(type, timers[type].end);
+      }
+    }
+    saveState();
   }
-  saveState();
-}
 
-function toggleSections(){
-  const c = document.getElementById('typeChoix').value;
+  function toggleSections(){
+    const c = document.getElementById('typeChoix').value;
+    document.getElementById('sectionFeuillard').style.display = (c==='feuillard')?'block':'none';
+    document.getElementById('sectionPieces').style.display   = (c==='pieces')?'block':'none';
+    // Afficher les inputs
+    if(c==='feuillard') document.getElementById('inputsFeuillard').classList.remove('collapsed');
+    if(c==='pieces')   document.getElementById('inputsPieces').classList.remove('collapsed');
+  }
 
-  document.getElementById('sectionFeuillard').style.display = (c==='feuillard')?'block':'none';
-  document.getElementById('sectionPieces').style.display    = (c==='pieces')?'block':'none';
+  function enterBigTimerMode(type){
+    document.getElementById('normalUI').style.display='none';
+    document.getElementById('bigTimerUI').style.display='block';
+    bigTimerType = type; // verrouille le gros timer sur ce type
 
-  // Afficher les inputs (les valeurs mémorisées, si présentes, restent)
-  if(c==='feuillard') document.getElementById('inputsFeuillard').classList.remove('collapsed');
-  if(c==='pieces')    document.getElementById('inputsPieces').classList.remove('collapsed');
-}
-
-function enterBigTimerMode(type){
-  document.getElementById('normalUI').style.display='none';
-  document.getElementById('bigTimerUI').style.display='block';
-
-  bigTimerType = type;
-
-  const dur = timers[type].durationMin || 0;
-  const h = Math.floor(dur/60), m = dur%60;
-
-  const btn = document.getElementById('btnNouveau');
-  btn.textContent =
-    (type==='feuillard')
+    const dur = timers[type].durationMin || 0;
+    const h = Math.floor(dur/60), m = dur%60;
+    const btn = document.getElementById('btnNouveau');
+    btn.textContent = (type==='feuillard')
       ? `Lancer un nouveau rouleau de ${h}h ${m}min`
       : `Lancer une nouvelle bobine de ${h}h ${m}min`;
 
-  // Démarrer un NOUVEAU timer de la même durée (sans reload)
-  btn.onclick = ()=>{
-    if(!timers[type] || !timers[type].durationMin){
-      alert("Aucune durée disponible pour démarrer un nouveau cycle.");
-      return;
+    // Démarrer un NOUVEAU timer de la même durée
+    btn.onclick = ()=>{
+      if(!timers[type] || !timers[type].durationMin){
+        alert("Aucune durée disponible pour démarrer un nouveau cycle.");
+        return;
+      }
+      stopOtherTimer(type); // empêche le double-minuteur
+      bigTimerType = type;
+
+      const start = new Date();
+      const end = addMin(start, timers[type].durationMin);
+
+      const inputId = (type==='feuillard' ? 'startTimeFeuillard' : 'startTimePieces');
+      const input   = document.getElementById(inputId);
+      if (input) input.value = nowHHMM();
+
+      showTimerBlock(type);
+      startCountdown(type, end);
+      updateBigTimerFrom(type);
+      saveState();
+    };
+
+    updateBigTimerFrom(type);
+  }
+
+  function exitBigTimerMode(){
+    document.getElementById('bigTimerUI').style.display='none';
+    document.getElementById('normalUI').style.display='block';
+  }
+
+  function updateBigTimerFrom(type){
+    const elSmall = document.getElementById(type==='feuillard'?'countdownFeuillard':'countdownPieces');
+    const elBig = document.getElementById('bigTimerText');
+    if (elSmall && elBig && elSmall.textContent){
+      elBig.textContent = elSmall.textContent.replace(/^Temps restant\s*:\s*/, '');
     }
-    const start = new Date();
-    const end = addMin(start, timers[type].durationMin);
-
-    // mettre à jour l'heure de début du type
-    const inputId = (type==='feuillard' ? 'startTimeFeuillard' : 'startTimePieces');
-    const input = document.getElementById(inputId);
-    if (input) input.value = nowHHMM();
-
-    showTimerBlock(type);
-    startCountdown(type, end); // relance la boucle
-    updateBigTimerFrom(type);  // rafraîchit le texte orange
-    saveState();
-  };
-
-  updateBigTimerFrom(type);
-}
-
-function exitBigTimerMode(){
-  document.getElementById('bigTimerUI').style.display='none';
-  document.getElementById('normalUI').style.display='block';
-}
-
-function updateBigTimerFrom(type){
-  const elSmall = document.getElementById(type==='feuillard'?'countdownFeuillard':'countdownPieces');
-  const elBig   = document.getElementById('bigTimerText');
-  if (elSmall && elBig && elSmall.textContent){
-    elBig.textContent = elSmall.textContent.replace(/^Temps restant\s*:\s*/,'');
   }
-}
 
-//========================================================
-// UTILS
-//========================================================
-function pad2(n){ return n.toString().padStart(2,'0'); }
-function nowHHMM(){ const d=new Date(); return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
-function parseTimeToDate(hhmm){
-  const [h,m]=hhmm.split(':').map(Number);
-  const d=new Date(); d.setHours(h,m,0,0); return d;
-}
-function addMin(date,min){ return new Date(date.getTime()+min*60000); }
-function formatHHMM(d){ return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
+  //========================================================
+  // UTILS
+  //========================================================
+  function pad2(n){ return n.toString().padStart(2,'0'); }
+  function nowHHMM(){ const d=new Date(); return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
+  function parseTimeToDate(hhmm){
+    const [h,m]=hhmm.split(':').map(Number);
+    const d=new Date(); d.setHours(h,m,0,0); return d;
+  }
+  function addMin(date,min){ return new Date(date.getTime()+min*60000); }
+  function formatHHMM(d){ return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
 
-//========================================================
-// TIMER
-//========================================================
-function showTimerBlock(t){
-  document.getElementById(t==='feuillard'?'timeFeuillard':'timePieces').style.display='block';
-}
-function startCountdown(t,end){
-  clearInterval(timers[t].interval);
-  timers[t].end = end;
+  // Arrête le timer de l'autre type pour éviter les alternances d'affichage
+  function stopOtherTimer(current) {
+    const other = current === 'feuillard' ? 'pieces' : 'feuillard';
 
-  const el = document.getElementById(t==='feuillard'?'countdownFeuillard':'countdownPieces');
-
-  function tick(){
-    const now = new Date();
-    const diff = Math.max(0, end-now);
-    const m = Math.floor(diff/60000);
-    const s = Math.floor((diff%60000)/1000);
-    el.textContent = `Temps restant : ${pad2(m)} min ${pad2(s)} s`;
-
-    if(document.getElementById('bigTimerUI').style.display==='block')
-      updateBigTimerFrom(t);
-
-    if(diff<=0){
-      clearInterval(timers[t].interval);
-      el.textContent = 'Terminé.';
+    if (timers[other] && timers[other].interval) {
+      clearInterval(timers[other].interval);
+      timers[other].interval = null;
     }
+    timers[other].end = null;
+
+    // nettoie l'affichage de l'autre type
+    const elOther = document.getElementById(
+      other === 'feuillard' ? 'countdownFeuillard' : 'countdownPieces'
+    );
+    if (elOther) elOther.textContent = '';
+
     saveState();
   }
-  tick();
-  timers[t].interval = setInterval(tick,1000);
-}
 
-//========================================================
-// CALCULS
-//========================================================
-function calculFeuillard(){
-  const pm = parseFloat(poidsMetre.value);
-  const pr = parseFloat(poidsRouleau.value);
-  const v  = parseFloat(vitesseFeuillard.value);
-  const out = resultFeuillard;
-
-  if(pm>0 && pr>0 && v>0){
-    const kgpm = pm/1000;
-    const dureeH = pr/(kgpm*v);
-    const minTotal = Math.round(dureeH*60);
-    timers.feuillard.durationMin = minTotal;
-
-    out.className='result success';
-    out.textContent = `Durée : ${Math.floor(minTotal/60)} h ${minTotal%60} min`;
-
-    startTimeFeuillard.value = nowHHMM();
-    previewFin('feuillard');
-    startTimeFeuillard.oninput = ()=>validerHeure('feuillard');
-    document.getElementById('timeFeuillard').style.display='block';
-    saveState();
-  } else {
-    out.className='result error';
-    out.textContent = 'Champs incorrects.';
+  //========================================================
+  // TIMER
+  //========================================================
+  function showTimerBlock(t){
+    document.getElementById(t==='feuillard'?'timeFeuillard':'timePieces').style.display='block';
   }
-}
 
-function calculPieces(){
-  const nb = parseFloat(nbPieces.value);
-  const ppp = parseFloat(piecesParPas.value);
-  const tm  = parseFloat(taillePas.value);
-  const v   = parseFloat(vitessePieces.value);
-  const out = resultPieces;
+  function startCountdown(t, end){
+    // Empêche deux minuteurs concurrents
+    stopOtherTimer(t);
 
-  if(nb>0 && ppp>0 && tm>0 && v>0){
-    const tmM = tm/1000;
-    const dureeH = (nb*tmM)/(ppp*v);
-    const minTotal = Math.round(dureeH*60);
-    timers.pieces.durationMin = minTotal;
+    clearInterval(timers[t].interval);
+    timers[t].end = end;
 
-    out.className='result success';
-    out.textContent = `Durée : ${Math.floor(minTotal/60)} h ${minTotal%60} min`;
+    // Si le big timer est visible, on le "verrouille" sur ce type
+    bigTimerType = t;
 
-    startTimePieces.value = nowHHMM();
-    previewFin('pieces');
-    startTimePieces.oninput = ()=>validerHeure('pieces');
-    document.getElementById('timePieces').style.display='block';
-    saveState();
-  } else {
-    out.className='result error';
-    out.textContent='Champs incorrects.';
+    const el = document.getElementById(t==='feuillard'?'countdownFeuillard':'countdownPieces');
+
+    function tick(){
+      const now = new Date();
+      const diff = Math.max(0, end - now);
+      const m = Math.floor(diff/60000);
+      const s = Math.floor((diff%60000)/1000);
+
+      el.textContent = `Temps restant : ${pad2(m)} min ${pad2(s)} s`;
+
+      // On n'alimente le gros timer que depuis le type verrouillé
+      if (document.getElementById('bigTimerUI').style.display==='block' && bigTimerType === t){
+        updateBigTimerFrom(t);
+      }
+
+      if(diff<=0){
+        clearInterval(timers[t].interval);
+        timers[t].interval = null;
+        el.textContent = 'Terminé.';
+        timers[t].end = null;
+      }
+
+      saveState();
+    }
+
+    tick();
+    timers[t].interval = setInterval(tick,1000);
   }
-}
 
-//========================================================
-// VALIDATION & PREVIEW
-//========================================================
-function departMaintenant(t){
-  const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
-  input.value = nowHHMM();
-  validerHeure(t);
-}
+  //========================================================
+  // CALCULS
+  //========================================================
+  function calculFeuillard(){
+    const pm = parseFloat((document.getElementById('poidsMetre').value || '').replace(',', '.'));
+    const pr = parseFloat((document.getElementById('poidsRouleau').value || '').replace(',', '.'));
+    const v  = parseFloat((document.getElementById('vitesseFeuillard').value || '').replace(',', '.'));
+    const out = document.getElementById('resultFeuillard');
 
-function validerHeure(t){
-  if(!timers[t].durationMin){ alert("Calculez d'abord la durée."); return; }
-  const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
-  if(!input.value){ alert("Heure de début manquante"); return; }
+    if(pm>0 && pr>0 && v>0){
+      const kgpm = pm/1000;
+      const dureeH = pr/(kgpm*v);
+      const minTotal = Math.round(dureeH*60);
+      timers.feuillard.durationMin = minTotal;
 
-  const start = parseTimeToDate(input.value);
-  const end = addMin(start, timers[t].durationMin);
+      out.className='result success';
+      out.textContent = `Durée : ${Math.floor(minTotal/60)} h ${minTotal%60} min`;
 
-  const out = document.getElementById(t==='feuillard'?'endTimeFeuillard':'endTimePieces');
-  out.textContent =
-    (t==='feuillard' ? 'Si le rouleau' : 'Si la bobine') +
-    ` commence à ${formatHHMM(start)}, elle terminera à ${formatHHMM(end)}.`;
+      const st = document.getElementById('startTimeFeuillard');
+      st.value = nowHHMM();
+      previewFin('feuillard');
+      st.oninput = ()=>validerHeure('feuillard');
 
-  showTimerBlock(t);
-  startCountdown(t,end);
-}
+      document.getElementById('timeFeuillard').style.display='block';
+      saveState();
+    } else {
+      out.className='result error';
+      out.textContent = 'Champs incorrects.';
+    }
+  }
 
-function previewFin(t){
-  const dur = timers[t].durationMin;
-  if(!dur) return;
+  function calculPieces(){
+    const nb  = parseFloat((document.getElementById('nbPieces').value || '').replace(',', '.'));
+    const ppp = parseFloat((document.getElementById('piecesParPas').value || '').replace(',', '.'));
+    const tm  = parseFloat((document.getElementById('taillePas').value || '').replace(',', '.'));
+    const v   = parseFloat((document.getElementById('vitessePieces').value || '').replace(',', '.'));
+    const out = document.getElementById('resultPieces');
 
-  const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
-  if(!input.value) return;
+    if(nb>0 && ppp>0 && tm>0 && v>0){
+      const tmM = tm/1000;
+      const dureeH = (nb*tmM)/(ppp*v);
+      const minTotal = Math.round(dureeH*60);
+      timers.pieces.durationMin = minTotal;
 
-  const start = parseTimeToDate(input.value);
-  const end = addMin(start, dur);
+      out.className='result success';
+      out.textContent = `Durée : ${Math.floor(minTotal/60)} h ${minTotal%60} min`;
 
-  const out = document.getElementById(t==='feuillard'?'endTimeFeuillard':'endTimePieces');
-  out.textContent =
-    (t==='feuillard'?'Si le rouleau':'Si la bobine') +
-    ` commence à ${formatHHMM(start)}, elle terminera à ${formatHHMM(end)}.`;
+      const st = document.getElementById('startTimePieces');
+      st.value = nowHHMM();
+      previewFin('pieces');
+      st.oninput = ()=>validerHeure('pieces');
 
-  clearInterval(timers[t].interval);
-  document.getElementById(t==='feuillard'?'countdownFeuillard':'countdownPieces').textContent='';
-}
+      document.getElementById('timePieces').style.display='block';
+      saveState();
+    } else {
+      out.className='result error';
+      out.textContent='Champs incorrects.';
+    }
+  }
 
-//========================================================
-// RESET
-//========================================================
-function resetAll(){
-  localStorage.removeItem('outilDuree');
-  timers = {
-    feuillard:{end:null,durationMin:null,interval:null},
-    pieces:{end:null,durationMin:null,interval:null}
-  };
-  hideAllSections();
-  document.getElementById('typeChoix').value="";
-}
+  //========================================================
+  // VALIDATION & PREVIEW
+  //========================================================
+  function departMaintenant(t){
+    const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
+    input.value = nowHHMM();
+    validerHeure(t);
+  }
 
-//========================================================
-// INIT
-//========================================================
-window.addEventListener('load', loadState);
+  function validerHeure(t){
+    if(!timers[t].durationMin){ alert("Calculez d'abord la durée."); return; }
 
-//========================================================
-// SW v11
-//========================================================
-if('serviceWorker' in navigator){
-  window.addEventListener('load', async () => {
-    try {
-      const reg = await navigator.serviceWorker.register('./sw.js?v=11');
-      reg.addEventListener('updatefound', () => {
-        const nw = reg.installing; if(!nw) return;
-        nw.addEventListener('statechange', () => {
-          if(nw.state==='installed' && navigator.serviceWorker.controller)
-             if(reg.waiting) reg.waiting.postMessage({ type:'SKIP_WAITING' });
+    const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
+    if(!input.value){ alert("Heure de début manquante"); return; }
+
+    const start = parseTimeToDate(input.value);
+    const end = addMin(start, timers[t].durationMin);
+    const out = document.getElementById(t==='feuillard'?'endTimeFeuillard':'endTimePieces');
+
+    const sujet  = (t === 'feuillard') ? 'le rouleau' : 'la bobine';
+    const pronom = (t === 'feuillard') ? 'il'          : 'elle';
+
+    out.textContent = `Si ${sujet} commence à ${formatHHMM(start)}, ${pronom} terminera à ${formatHHMM(end)}.`;
+
+    showTimerBlock(t);
+    startCountdown(t,end);
+  }
+
+  function previewFin(t){
+    const dur = timers[t].durationMin;
+    if(!dur) return;
+
+    const input = document.getElementById(t==='feuillard'?'startTimeFeuillard':'startTimePieces');
+    if(!input.value) return;
+
+    const start = parseTimeToDate(input.value);
+    const end   = addMin(start, dur);
+    const out   = document.getElementById(t==='feuillard'?'endTimeFeuillard':'endTimePieces');
+
+    const sujet  = (t === 'feuillard') ? 'le rouleau' : 'la bobine';
+    const pronom = (t === 'feuillard') ? 'il'          : 'elle';
+
+    out.textContent = `Si ${sujet} commence à ${formatHHMM(start)}, ${pronom} terminera à ${formatHHMM(end)}.`;
+
+    // On arrête proprement une éventuelle prévisu
+    clearInterval(timers[t].interval);
+    timers[t].interval = null;
+
+    const el = document.getElementById(t==='feuillard'?'countdownFeuillard':'countdownPieces');
+    if (el) el.textContent = '';
+  }
+
+  //========================================================
+  // RESET
+  //========================================================
+  function resetAll(){
+    localStorage.removeItem('outilDuree');
+    timers = {
+      feuillard:{end:null,durationMin:null,interval:null},
+      pieces:{end:null,durationMin:null,interval:null}
+    };
+    hideAllSections();
+    document.getElementById('typeChoix').value="";
+  }
+
+  //========================================================
+  // INIT
+  //========================================================
+  window.addEventListener('load', loadState);
+  </script>
+
+  <script>
+  //========================================================
+  // SW v12
+  //========================================================
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', async () => {
+      try {
+        const reg = await navigator.serviceWorker.register('./sw.js?v=12'); // <— penser à mettre SW_VERSION='v12' dans sw.js
+        reg.addEventListener('updatefound', () => {
+          const nw = reg.installing; if(!nw) return;
+          nw.addEventListener('statechange', () => {
+            if(nw.state==='installed' && navigator.serviceWorker.controller)
+              if(reg.waiting) reg.waiting.postMessage({ type:'SKIP_WAITING' });
+          });
         });
-      });
-      let refreshing=false;
-      navigator.serviceWorker.addEventListener('controllerchange',()=>{
-        if(refreshing) return;
-        refreshing=true;
-        location.reload();
-      });
-      if(reg.update) reg.update();
-    } catch(e){
-      console.error("SW registration failed",e);
-    }
-  });
-}
-</script>
-
+        let refreshing=false;
+        navigator.serviceWorker.addEventListener('controllerchange',()=>{
+          if(refreshing) return;
+          refreshing=true;
+          location.reload();
+        });
+        if(reg.update) reg.update();
+      } catch(e){
+        console.error("SW registration failed",e);
+      }
+    });
+  }
+  </script>
 </body>
 </html>
-``
