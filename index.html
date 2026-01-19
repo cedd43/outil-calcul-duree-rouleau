@@ -6,8 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Calcul Durée Rouleau</title>
 
-  manifest.webmanifest
-  logo-192.png
+  <!-- PWA (corrigé : plus de texte brut) -->
+  <link rel="manifest" href="manifest.webmanifest?v=10">
+  <link rel="apple-touch-icon" href="logo-192.png">
 
   <meta name="theme-color" content="#0b0b0b">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -23,6 +24,8 @@
       --start-hover: #1b5e20;
       --text-dark: #222;
     }
+
+    html, body{ height:100%; }
 
     body{
       margin:0;
@@ -78,6 +81,8 @@
       font-size:15px;
     }
 
+    input::placeholder{ color:#999; font-style:italic; }
+
     button{
       padding:12px;
       width:100%;
@@ -89,25 +94,17 @@
       margin-top:16px;
       font-size:1.05em;
     }
-
     .btn-primary{ background:var(--primary); }
     .btn-primary:hover{ background:#0056b3; }
-
     .btn-start{ background:var(--start); }
     .btn-start:hover{ background:var(--start-hover); }
-
     .btn-reset{
       background:#6c757d;
       margin-top:25px;
     }
     .btn-reset:hover{ background:#555; }
 
-    .result{
-      margin-top:14px;
-      font-weight:bold;
-      font-size:1.05em;
-    }
-
+    .result{ margin-top:14px; font-weight:bold; font-size:1.05em; }
     .success{ color:var(--success); }
     .error{ color:#d93025; }
 
@@ -141,7 +138,7 @@
 
 <div class="container">
 
-  <!-- SELECT TYPE -->
+  <!-- SÉLECTION TYPE -->
   <label>Choisissez le type :</label>
   <select id="typeChoix" onchange="onTypeChange()">
     <option value="">-- Sélectionnez --</option>
@@ -154,49 +151,58 @@
     <h2>Feuillard</h2>
 
     <label>Poids du rouleau (kg) :</label>
-    <input type="number" id="poidsRouleau" oninput="saveState(); updateLongueurFeuillard(); updateFin('feuillard')">
+    <input type="number" id="poidsRouleau" placeholder="ex : 1200" step="50"
+           oninput="saveState(); updateLongueurFeuillard(); updateFin('feuillard')">
 
     <label>Poids par mètre (g/m) :</label>
-    <input type="number" id="poidsMetre" oninput="saveState(); updateLongueurFeuillard(); updateFin('feuillard')">
+    <input type="number" id="poidsMetre" placeholder="ex : 150" step="1"
+           oninput="saveState(); updateLongueurFeuillard(); updateFin('feuillard')">
 
     <div id="longueurFeuillard" class="info-box"></div>
 
     <label>Vitesse (m/h) :</label>
-    <input type="number" id="vitesseFeuillard" oninput="saveState(); updateFin('feuillard')">
+    <input type="number" id="vitesseFeuillard" placeholder="ex : 200" step="10"
+           oninput="saveState(); updateFin('feuillard')">
 
     <button class="btn-primary" onclick="calculFeuillard()">Calculer la durée</button>
     <div id="resultFeuillard" class="result"></div>
 
     <label style="margin-top:15px;">Heure de début :</label>
-    <input type="time" id="startTimeFeuillard" oninput="saveState(); updateFin('feuillard')">
+    <input type="time" id="startTimeFeuillard"
+           oninput="saveState(); updateFin('feuillard')">
     <button class="btn-start" onclick="setStartNow('feuillard')">Définir l'heure actuelle</button>
 
     <div id="endTimeFeuillard" class="result"></div>
   </div>
 
-  <!-- PIECES -->
+  <!-- PIÈCES DÉCOUPÉES -->
   <div id="sectionPieces" style="display:none;">
     <h2>Pièces découpées</h2>
 
     <label>Nombre total de pièces :</label>
-    <input type="number" id="nbPieces" oninput="saveState(); updateLongueurPieces(); updateFin('pieces')">
+    <input type="number" id="nbPieces" placeholder="ex : 35000" step="1000"
+           oninput="saveState(); updateLongueurPieces(); updateFin('pieces')">
 
     <label>Pièces par pas :</label>
-    <input type="number" id="piecesParPas" oninput="saveState(); updateLongueurPieces(); updateFin('pieces')">
+    <input type="number" id="piecesParPas" placeholder="ex : 1" step="1" value="1"
+           oninput="saveState(); updateLongueurPieces(); updateFin('pieces')">
 
     <label>Taille du pas (mm) :</label>
-    <input type="number" id="taillePas" oninput="saveState(); updateLongueurPieces(); updateFin('pieces')">
+    <input type="number" id="taillePas" placeholder="ex : 24" step="1"
+           oninput="saveState(); updateLongueurPieces(); updateFin('pieces')">
 
     <div id="longueurPieces" class="info-box"></div>
 
     <label>Vitesse (m/h) :</label>
-    <input type="number" id="vitessePieces" oninput="saveState(); updateFin('pieces')">
+    <input type="number" id="vitessePieces" placeholder="ex : 180" step="10"
+           oninput="saveState(); updateFin('pieces')">
 
     <button class="btn-primary" onclick="calculPieces()">Calculer la durée</button>
     <div id="resultPieces" class="result"></div>
 
     <label style="margin-top:15px;">Heure de début :</label>
-    <input type="time" id="startTimePieces" oninput="saveState(); updateFin('pieces')">
+    <input type="time" id="startTimePieces"
+           oninput="saveState(); updateFin('pieces')">
     <button class="btn-start" onclick="setStartNow('pieces')">Définir l'heure actuelle</button>
 
     <div id="endTimePieces" class="result"></div>
@@ -207,35 +213,40 @@
 </div>
 
 <div class="footer">
-  outil libre d'accès – C.Duffner – AST PEM – v3.1 – 19/01/26
+  outil libre d'accès – C.Duffner – AST PEM – V3.1 – 19/01/26
 </div>
 
 <script>
 /* -------------------------------
    UTILS
 --------------------------------*/
+const $ = (id) => document.getElementById(id);
 function pad2(n){ return n.toString().padStart(2,"0"); }
 function nowHHMM(){ const d=new Date(); return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
-function timeToDate(t){ const[d,h]=t.split(":"); const dt=new Date(); dt.setHours(+d||0, +h||0,0,0); return dt; }
+function timeToDate(hhmm){
+  const [h,m] = (hhmm||"").split(":").map(Number);
+  const d = new Date();
+  d.setHours(h||0, m||0, 0, 0);
+  return d;
+}
 function addMin(dt,m){ return new Date(dt.getTime()+m*60000); }
 function fmt(dt){ return pad2(dt.getHours())+":"+pad2(dt.getMinutes()); }
-function g(id){ return document.getElementById(id); }
 
 /* -------------------------------
    SAUVEGARDE
 --------------------------------*/
 function saveState(){
   const s = {
-    type: g("typeChoix").value,
-    poidsRouleau: g("poidsRouleau").value,
-    poidsMetre: g("poidsMetre").value,
-    vitesseFeuillard: g("vitesseFeuillard").value,
-    nbPieces: g("nbPieces").value,
-    piecesParPas: g("piecesParPas").value,
-    taillePas: g("taillePas").value,
-    vitessePieces: g("vitessePieces").value,
-    startF: g("startTimeFeuillard").value,
-    startP: g("startTimePieces").value
+    type: $("typeChoix").value,
+    poidsRouleau: $("poidsRouleau").value,
+    poidsMetre: $("poidsMetre").value,
+    vitesseFeuillard: $("vitesseFeuillard").value,
+    nbPieces: $("nbPieces").value,
+    piecesParPas: $("piecesParPas").value,
+    taillePas: $("taillePas").value,
+    vitessePieces: $("vitessePieces").value,
+    startF: $("startTimeFeuillard").value,
+    startP: $("startTimePieces").value
   };
   localStorage.setItem("outilDuree_3_1", JSON.stringify(s));
 }
@@ -243,150 +254,150 @@ function saveState(){
 function loadState(){
   const raw = localStorage.getItem("outilDuree_3_1");
   if(!raw) return;
-  const s = JSON.parse(raw);
-
-  g("typeChoix").value = s.type || "";
-  g("poidsRouleau").value = s.poidsRouleau || "";
-  g("poidsMetre").value = s.poidsMetre || "";
-  g("vitesseFeuillard").value = s.vitesseFeuillard || "";
-  g("nbPieces").value = s.nbPieces || "";
-  g("piecesParPas").value = s.piecesParPas || "";
-  g("taillePas").value = s.taillePas || "";
-  g("vitessePieces").value = s.vitessePieces || "";
-  g("startTimeFeuillard").value = s.startF || "";
-  g("startTimePieces").value = s.startP || "";
-
-  onTypeChange();
-  updateLongueurFeuillard();
-  updateLongueurPieces();
-  updateFin("feuillard");
-  updateFin("pieces");
+  try{
+    const s = JSON.parse(raw);
+    $("typeChoix").value       = s.type || "";
+    $("poidsRouleau").value    = s.poidsRouleau || "";
+    $("poidsMetre").value      = s.poidsMetre || "";
+    $("vitesseFeuillard").value= s.vitesseFeuillard || "";
+    $("nbPieces").value        = s.nbPieces || "";
+    $("piecesParPas").value    = s.piecesParPas || "1";
+    $("taillePas").value       = s.taillePas || "";
+    $("vitessePieces").value   = s.vitessePieces || "";
+    $("startTimeFeuillard").value = s.startF || "";
+    $("startTimePieces").value    = s.startP || "";
+  }catch(e){}
 }
 
 /* -------------------------------
    AFFICHAGE SECTIONS
 --------------------------------*/
 function onTypeChange(){
-  g("sectionFeuillard").style.display = "none";
-  g("sectionPieces").style.display = "none";
-
-  if(g("typeChoix").value==="feuillard") g("sectionFeuillard").style.display="block";
-  if(g("typeChoix").value==="pieces") g("sectionPieces").style.display="block";
-
+  $("sectionFeuillard").style.display = "none";
+  $("sectionPieces").style.display = "none";
+  if($("typeChoix").value==="feuillard") $("sectionFeuillard").style.display="block";
+  if($("typeChoix").value==="pieces") $("sectionPieces").style.display="block";
   saveState();
 }
 
 /* -------------------------------
-   LONGUEUR ROUL./BOBINE
+   LONGUEURS
 --------------------------------*/
-function updateLongueurFeuillard(){
-  const pr = parseFloat(g("poidsRouleau").value);
-  const pm = parseFloat(g("poidsMetre").value);
-  const box = g("longueurFeuillard");
+function formatMeters(m){
+  return (m>=100 ? Math.round(m) : Math.round(m*10)/10).toString().replace(".",",");
+}
 
+function updateLongueurFeuillard(){
+  const pr = parseFloat($("poidsRouleau").value);
+  const pm = parseFloat($("poidsMetre").value);
+  const box = $("longueurFeuillard");
   if(pr>0 && pm>0){
     const m = (pr*1000)/pm;
-    box.innerText = "Rouleau de " + (m>=100?Math.round(m):Math.round(m*10)/10).toString().replace(".",",") + " m";
-    box.style.display="block";
-  } else box.style.display="none";
+    box.textContent = "Rouleau de " + formatMeters(m) + " m";
+    box.style.display = "block";
+  } else {
+    box.textContent = "";
+    box.style.display = "none";
+  }
 }
 
 function updateLongueurPieces(){
-  const nb = parseFloat(g("nbPieces").value);
-  const ppp= parseFloat(g("piecesParPas").value);
-  const tp = parseFloat(g("taillePas").value);
-  const box = g("longueurPieces");
-
+  const nb = parseFloat($("nbPieces").value);
+  const ppp= parseFloat($("piecesParPas").value);
+  const tp = parseFloat($("taillePas").value);
+  const box = $("longueurPieces");
   if(nb>0 && ppp>0 && tp>0){
     const m = (nb/ppp)*(tp/1000);
-    box.innerText = "Bobine de " + (m>=100?Math.round(m):Math.round(m*10)/10).toString().replace(".",",") + " m";
-    box.style.display="block";
-  } else box.style.display="none";
+    box.textContent = "Bobine de " + formatMeters(m) + " m";
+    box.style.display = "block";
+  } else {
+    box.textContent = "";
+    box.style.display = "none";
+  }
 }
 
 /* -------------------------------
-   CALCULS DUREE
+   CALCULS
 --------------------------------*/
 let durees = { feuillard:null, pieces:null };
 
 function calculFeuillard(){
-  const pm=parseFloat(g("poidsMetre").value);
-  const pr=parseFloat(g("poidsRouleau").value);
-  const v =parseFloat(g("vitesseFeuillard").value);
-  const out=g("resultFeuillard");
+  const pm = parseFloat($("poidsMetre").value);     // g/m
+  const pr = parseFloat($("poidsRouleau").value);   // kg
+  const v  = parseFloat($("vitesseFeuillard").value); // m/h
+  const out = $("resultFeuillard");
 
   if(pm>0 && pr>0 && v>0){
     const h = pr / ((pm/1000)*v);
     const min = Math.round(h*60);
     durees.feuillard = min;
 
-    out.className="result success";
-    out.innerText = `Durée : ${Math.floor(min/60)} h ${min%60} min`;
+    out.className = "result success";
+    out.textContent = `Durée : ${Math.floor(min/60)} h ${min%60} min`;
 
+    // Met à jour la phrase de fin si une heure existe
     updateFin("feuillard");
     saveState();
   } else {
-    out.className="result error";
-    out.innerText = "Champs incorrects.";
     durees.feuillard = null;
-    g("endTimeFeuillard").innerText="";
+    out.className = "result error";
+    out.textContent = "Champs incorrects.";
+    $("endTimeFeuillard").textContent = "";
   }
 }
 
 function calculPieces(){
-  const nb =parseFloat(g("nbPieces").value);
-  const ppp=parseFloat(g("piecesParPas").value);
-  const tp =parseFloat(g("taillePas").value);
-  const v  =parseFloat(g("vitessePieces").value);
-  const out=g("resultPieces");
+  const nb = parseFloat($("nbPieces").value);
+  const ppp= parseFloat($("piecesParPas").value);
+  const tp = parseFloat($("taillePas").value); // mm
+  const v  = parseFloat($("vitessePieces").value); // m/h
+  const out= $("resultPieces");
 
   if(nb>0 && ppp>0 && tp>0 && v>0){
     const h = (nb*(tp/1000))/(ppp*v);
-    const min=Math.round(h*60);
-    durees.pieces=min;
+    const min = Math.round(h*60);
+    durees.pieces = min;
 
-    out.className="result success";
-    out.innerText=`Durée : ${Math.floor(min/60)} h ${min%60} min`;
+    out.className = "result success";
+    out.textContent = `Durée : ${Math.floor(min/60)} h ${min%60} min`;
 
     updateFin("pieces");
     saveState();
   } else {
-    out.className="result error";
-    out.innerText="Champs incorrects.";
-    durees.pieces=null;
-    g("endTimePieces").innerText="";
+    durees.pieces = null;
+    out.className = "result error";
+    out.textContent = "Champs incorrects.";
+    $("endTimePieces").textContent = "";
   }
 }
 
 /* -------------------------------
-   HEURE DE FIN
+   HEURE DE FIN (pas de timer)
 --------------------------------*/
 function updateFin(t){
-  const dur = t==="feuillard" ? durees.feuillard : durees.pieces;
+  const dur = (t==="feuillard" ? durees.feuillard : durees.pieces);
   if(!dur) return;
 
-  const startId = t==="feuillard" ? "startTimeFeuillard" : "startTimePieces";
-  const endId   = t==="feuillard" ? "endTimeFeuillard"   : "endTimePieces";
+  const inId  = (t==="feuillard" ? "startTimeFeuillard" : "startTimePieces");
+  const outId = (t==="feuillard" ? "endTimeFeuillard"  : "endTimePieces");
 
-  const startVal = g(startId).value;
+  const startVal = $(inId).value;
   if(!startVal){
-    g(endId).innerText="";
+    $(outId).textContent = "";
     return;
   }
 
   const start = timeToDate(startVal);
   const end   = addMin(start, dur);
+  const sujet = (t==="feuillard" ? "le rouleau" : "la bobine");
+  const pronom= (t==="feuillard" ? "il" : "elle");
 
-  const sujet = (t==="feuillard"?"le rouleau":"la bobine");
-  const pronom= (t==="feuillard"?"il":"elle");
-
-  g(endId).innerText =
-    `Si ${sujet} commence à ${fmt(start)}, ${pronom} terminera à ${fmt(end)}.`;
+  $(outId).textContent = `Si ${sujet} commence à ${fmt(start)}, ${pronom} terminera à ${fmt(end)}.`;
 }
 
 function setStartNow(t){
   const id = (t==="feuillard" ? "startTimeFeuillard" : "startTimePieces");
-  g(id).value = nowHHMM();
+  $(id).value = nowHHMM();
   updateFin(t);
   saveState();
 }
@@ -396,29 +407,61 @@ function setStartNow(t){
 --------------------------------*/
 function resetAll(){
   localStorage.removeItem("outilDuree_3_1");
-  const ids=[
-    "poidsRouleau","poidsMetre","vitesseFeuillard",
-    "nbPieces","piecesParPas","taillePas","vitessePieces",
-    "startTimeFeuillard","startTimePieces"
-  ];
-  ids.forEach(i=>g(i).value="");
 
-  g("resultFeuillard").innerText="";
-  g("resultPieces").innerText="";
-  g("endTimeFeuillard").innerText="";
-  g("endTimePieces").innerText="";
-  g("longueurFeuillard").style.display="none";
-  g("longueurPieces").style.display="none";
+  // vider champs
+  ["poidsRouleau","poidsMetre","vitesseFeuillard",
+   "nbPieces","piecesParPas","taillePas","vitessePieces",
+   "startTimeFeuillard","startTimePieces"].forEach(id=>$(id).value="");
 
-  g("typeChoix").value="";
-  g("sectionFeuillard").style.display="none";
-  g("sectionPieces").style.display="none";
+  // restaurer valeur par défaut de pièces par pas
+  $("piecesParPas").value = "1";
+
+  // nettoyer affichages
+  ["resultFeuillard","resultPieces","endTimeFeuillard","endTimePieces"].forEach(id=>$(id).textContent="");
+  $("longueurFeuillard").style.display="none";
+  $("longueurPieces").style.display="none";
+
+  // sections
+  $("typeChoix").value="";
+  $("sectionFeuillard").style.display="none";
+  $("sectionPieces").style.display="none";
+
+  // réafficher placeholders (déjà gérés par HTML)
 }
 
 /* -------------------------------
    INIT
 --------------------------------*/
-window.addEventListener("load", loadState);
+window.addEventListener("load", ()=>{
+  loadState();          // recharge valeurs sauvegardées si présentes
+  onTypeChange();       // affiche la bonne section
+  updateLongueurFeuillard();
+  updateLongueurPieces();
+  updateFin("feuillard");
+  updateFin("pieces");
+});
+</script>
+
+<!-- Service Worker : on garde ta version (change le ?v=13 → ?v=15 pour forcer une MAJ) -->
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', async () => {
+    try{
+      const reg = await navigator.serviceWorker.register('./sw.js?v=17');
+      reg.addEventListener('updatefound', () => {
+        const nw = reg.installing; if(!nw) return;
+        nw.addEventListener('statechange', () => {
+          if(nw.state==='installed' && navigator.serviceWorker.controller){
+            if(reg.waiting) reg.waiting.postMessage({ type:'SKIP_WAITING' });
+          }
+        });
+      });
+      let refreshing=false;
+      navigator.serviceWorker.addEventListener('controllerchange',()=>{ if(refreshing) return; refreshing=true; location.reload(); });
+      if(reg.update) reg.update();
+    }catch(e){ console.error('SW registration failed', e); }
+  });
+}
 </script>
 
 </body>
