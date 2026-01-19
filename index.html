@@ -4,11 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calcul Durée Rouleau – v15</title>
+  <title>Calcul Durée Rouleau</title>
 
-  <!-- PWA -->
-  manifest.webmanifest?v=15
-  logo-192.png?v=15
+  manifest.webmanifest
+  logo-192.png
 
   <meta name="theme-color" content="#0b0b0b">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -22,77 +21,127 @@
       --primary: #007bff;
       --start: #2e7d32;
       --start-hover: #1b5e20;
+      --text-dark: #222;
     }
-    html, body { height: 100%; }
+
     body{
-      margin:0; font-family:Arial, sans-serif; background:#0b0b0b;
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:#0b0b0b;
       background-image:
         linear-gradient(rgba(0,0,0,var(--bg-overlay)), rgba(0,0,0,var(--bg-overlay))),
         url('bg-pem.jpg');
-      background-size:cover; background-position:center; background-repeat:no-repeat; background-attachment:fixed;
+      background-size:cover;
+      background-position:center;
+      background-repeat:no-repeat;
+      background-attachment:fixed;
       padding:20px;
     }
+
+    h1{
+      text-align:center;
+      color:white;
+      text-shadow:0 2px 6px rgba(0,0,0,0.6);
+      margin-bottom:20px;
+    }
+
     .container{
-      max-width:560px; margin:0 auto;
+      max-width:560px;
+      margin:0 auto;
       background:rgba(255,255,255,var(--card-bg));
-      padding:22px; border-radius:10px;
+      padding:22px;
+      border-radius:10px;
       box-shadow:0 10px 28px rgba(0,0,0,0.35);
       backdrop-filter:blur(2px);
     }
-    h1{
-      text-align:center; color:white;
-      text-shadow:0 2px 6px rgba(0,0,0,0.6);
+
+    h2{
+      margin-top:10px;
+      color:var(--text-dark);
+      border-left:5px solid var(--primary);
+      padding-left:8px;
     }
-    h2{ margin:16px 0 8px; color:#222; }
-    label{ display:block; margin-top:10px; color:#222 }
+
+    label{
+      display:block;
+      margin-top:12px;
+      color:var(--text-dark);
+      font-weight:bold;
+    }
+
     input,select{
-      width:100%; padding:8px; margin-top:5px;
-      border-radius:6px; border:1px solid #cfd4dc;
+      width:100%;
+      padding:10px;
+      margin-top:5px;
+      border-radius:6px;
+      border:1px solid #cfd4dc;
+      font-size:15px;
     }
-    input::placeholder{ color:#999; font-style:italic; }
+
     button{
-      padding:11px; width:100%; border:none; border-radius:6px;
-      color:white; font-weight:bold; cursor:pointer; margin-top:14px;
+      padding:12px;
+      width:100%;
+      border:none;
+      border-radius:6px;
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
+      margin-top:16px;
+      font-size:1.05em;
     }
+
     .btn-primary{ background:var(--primary); }
     .btn-primary:hover{ background:#0056b3; }
-    .btn-start{ background:var(--start); font-size:1.05rem; }
+
+    .btn-start{ background:var(--start); }
     .btn-start:hover{ background:var(--start-hover); }
-    .btn-reset{ background:#6c757d; }
+
+    .btn-reset{
+      background:#6c757d;
+      margin-top:25px;
+    }
     .btn-reset:hover{ background:#555; }
 
-    .result{ margin-top:12px; font-weight:bold; }
-    .result.success{ color:var(--success); }
-    .result.error{ color:#d93025; }
+    .result{
+      margin-top:14px;
+      font-weight:bold;
+      font-size:1.05em;
+    }
 
-    .section{ display:none; }
+    .success{ color:var(--success); }
+    .error{ color:#d93025; }
 
-    .info{
-      padding:10px; margin-top:10px;
+    .info-box{
+      margin-top:12px;
       background:#eef3fa;
-      border:1px solid #cfd6e2;
+      border:1px solid #d6dde7;
+      padding:10px;
       border-radius:6px;
-      font-weight:600;
+      font-weight:bold;
       color:#0b3d66;
+      display:none;
     }
 
     .footer{
-      margin:24px auto 0; width:fit-content;
-      color:white; font-size:14px; font-weight:bold;
+      margin:24px auto 0;
+      width:fit-content;
+      color:white;
+      font-size:14px;
+      font-weight:bold;
       background:rgba(0,0,0,0.4);
-      padding:8px 12px; border-radius:6px;
+      padding:8px 12px;
+      border-radius:6px;
       text-shadow:0 2px 6px rgba(0,0,0,0.7);
     }
   </style>
-
 </head>
 <body>
 
-<h1>Calcul Durée Rouleau – v15</h1>
+<h1>Calcul Durée Rouleau</h1>
 
 <div class="container">
 
-  <!-- SÉLECTION TYPE -->
+  <!-- SELECT TYPE -->
   <label>Choisissez le type :</label>
   <select id="typeChoix" onchange="onTypeChange()">
     <option value="">-- Sélectionnez --</option>
@@ -100,80 +149,57 @@
     <option value="pieces">Pièces découpées</option>
   </select>
 
-  <!-- ======================== -->
-  <!-- SECTION FEUILLARD       -->
-  <!-- ======================== -->
-  <div id="sectionFeuillard" class="section">
-
+  <!-- FEUILLARD -->
+  <div id="sectionFeuillard" style="display:none;">
     <h2>Feuillard</h2>
 
     <label>Poids du rouleau (kg) :</label>
-    <input type="number" id="poidsRouleau"
-      oninput="updateLongueurFeuillard(); saveState(); if(durees.feuillard) validerHeure('feuillard');">
+    <input type="number" id="poidsRouleau" oninput="saveState(); updateLongueurFeuillard(); updateFin('feuillard')">
 
     <label>Poids par mètre (g/m) :</label>
-    <input type="number" id="poidsMetre"
-      oninput="updateLongueurFeuillard(); saveState(); if(durees.feuillard) validerHeure('feuillard');">
+    <input type="number" id="poidsMetre" oninput="saveState(); updateLongueurFeuillard(); updateFin('feuillard')">
 
-    <div id="longueurFeuillard" class="info" style="display:none;"></div>
+    <div id="longueurFeuillard" class="info-box"></div>
 
     <label>Vitesse (m/h) :</label>
-    <input type="number" id="vitesseFeuillard"
-      oninput="saveState(); if(durees.feuillard) validerHeure('feuillard');">
+    <input type="number" id="vitesseFeuillard" oninput="saveState(); updateFin('feuillard')">
 
     <button class="btn-primary" onclick="calculFeuillard()">Calculer la durée</button>
     <div id="resultFeuillard" class="result"></div>
 
-    <div id="timeFeuillard" style="display:none; margin-top:8px;">
-      <label>Heure de début :</label>
-      <input type="time" id="startTimeFeuillard"
-        oninput="validerHeure('feuillard'); saveState();">
+    <label style="margin-top:15px;">Heure de début :</label>
+    <input type="time" id="startTimeFeuillard" oninput="saveState(); updateFin('feuillard')">
+    <button class="btn-start" onclick="setStartNow('feuillard')">Définir l'heure actuelle</button>
 
-      <button class="btn-start" onclick="setStartNow('feuillard')">Définir l'heure actuelle</button>
-
-      <div id="endTimeFeuillard" class="result"></div>
-    </div>
-
+    <div id="endTimeFeuillard" class="result"></div>
   </div>
 
-  <!-- ======================== -->
-  <!-- SECTION PIÈCES DECOUPÉES -->
-  <!-- ======================== -->
-  <div id="sectionPieces" class="section">
-
+  <!-- PIECES -->
+  <div id="sectionPieces" style="display:none;">
     <h2>Pièces découpées</h2>
 
     <label>Nombre total de pièces :</label>
-    <input type="number" id="nbPieces"
-      oninput="updateLongueurPieces(); saveState(); if(durees.pieces) validerHeure('pieces');">
+    <input type="number" id="nbPieces" oninput="saveState(); updateLongueurPieces(); updateFin('pieces')">
 
     <label>Pièces par pas :</label>
-    <input type="number" id="piecesParPas"
-      oninput="updateLongueurPieces(); saveState(); if(durees.pieces) validerHeure('pieces');">
+    <input type="number" id="piecesParPas" oninput="saveState(); updateLongueurPieces(); updateFin('pieces')">
 
     <label>Taille du pas (mm) :</label>
-    <input type="number" id="taillePas"
-      oninput="updateLongueurPieces(); saveState(); if(durees.pieces) validerHeure('pieces');">
+    <input type="number" id="taillePas" oninput="saveState(); updateLongueurPieces(); updateFin('pieces')">
 
-    <div id="longueurPieces" class="info" style="display:none;"></div>
+    <div id="longueurPieces" class="info-box"></div>
 
     <label>Vitesse (m/h) :</label>
-    <input type="number" id="vitessePieces"
-      oninput="saveState(); if(durees.pieces) validerHeure('pieces');">
+    <input type="number" id="vitessePieces" oninput="saveState(); updateFin('pieces')">
 
     <button class="btn-primary" onclick="calculPieces()">Calculer la durée</button>
     <div id="resultPieces" class="result"></div>
 
-    <div id="timePieces" style="display:none; margin-top:8px;">
-      <label>Heure de début :</label>
-      <input type="time" id="startTimePieces"
-        oninput="validerHeure('pieces'); saveState();">
+    <label style="margin-top:15px;">Heure de début :</label>
+    <input type="time" id="startTimePieces" oninput="saveState(); updateFin('pieces')">
+    <button class="btn-start" onclick="setStartNow('pieces')">Définir l'heure actuelle</button>
 
-      <button class="btn-start" onclick="setStartNow('pieces')">Définir l'heure actuelle</button>
-
-      <div id="endTimePieces" class="result"></div>
-    </div>
-
+    <div id="endTimePieces" class="result"></div>
   </div>
 
   <button class="btn-reset" onclick="resetAll()">Réinitialiser</button>
@@ -181,236 +207,218 @@
 </div>
 
 <div class="footer">
-  Outil libre d'accès – C.Duffner – AST PEM – V15 – 19/01/26
+  outil libre d'accès – C.Duffner – AST PEM – v3.1 – 19/01/26
 </div>
 
-<!-- ============================== -->
-<!-- SCRIPT APPLICATION             -->
-<!-- ============================== -->
 <script>
+/* -------------------------------
+   UTILS
+--------------------------------*/
+function pad2(n){ return n.toString().padStart(2,"0"); }
+function nowHHMM(){ const d=new Date(); return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
+function timeToDate(t){ const[d,h]=t.split(":"); const dt=new Date(); dt.setHours(+d||0, +h||0,0,0); return dt; }
+function addMin(dt,m){ return new Date(dt.getTime()+m*60000); }
+function fmt(dt){ return pad2(dt.getHours())+":"+pad2(dt.getMinutes()); }
+function g(id){ return document.getElementById(id); }
 
-  function pad2(n){ return n.toString().padStart(2,'0'); }
-  function nowHHMM(){ const d=new Date(); return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
-  function parseTimeToDate(hhmm){
-    const [h,m]=hhmm.split(':').map(Number);
-    const d=new Date(); d.setHours(h||0,m||0,0,0); return d;
-  }
-  function addMin(date,min){ return new Date(date.getTime()+min*60000); }
-  function formatHHMM(d){ return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
-  function val(id){ const e=document.getElementById(id); return e?e.value:""; }
-  function show(id){ const e=document.getElementById(id); if(e) e.style.display="block"; }
-  function hide(id){ const e=document.getElementById(id); if(e) e.style.display="none"; }
-
-  const durees = { feuillard:null, pieces:null };
-
-  function saveState(){
-    const data={
-      typeChoix:val("typeChoix"),
-      poidsRouleau:val("poidsRouleau"),
-      poidsMetre:val("poidsMetre"),
-      vitesseFeuillard:val("vitesseFeuillard"),
-      nbPieces:val("nbPieces"),
-      piecesParPas:val("piecesParPas"),
-      taillePas:val("taillePas"),
-      vitessePieces:val("vitessePieces"),
-      startTimeFeuillard:val("startTimeFeuillard"),
-      startTimePieces:val("startTimePieces")
-    };
-    localStorage.setItem("outilDuree_v15", JSON.stringify(data));
-  }
-
-  function loadState(){
-    const raw = localStorage.getItem("outilDuree_v15");
-    if(!raw) return;
-    try{
-      const obj=JSON.parse(raw);
-      for(const id in obj){
-        if(document.getElementById(id)) document.getElementById(id).value = obj[id];
-      }
-    }catch(e){}
-  }
-
-  function hideAllSections(){
-    hide("sectionFeuillard");
-    hide("sectionPieces");
-  }
-
-  function onTypeChange(){
-    hideAllSections();
-    const t=val("typeChoix");
-    if(t==="feuillard") show("sectionFeuillard");
-    if(t==="pieces") show("sectionPieces");
-    saveState();
-  }
-
-  function formatMeters(m){
-    if(m>=100) return Math.round(m);
-    return (Math.round(m*10)/10).toString().replace(".",",");
-  }
-
-  function updateLongueurFeuillard(){
-    const pr=parseFloat(val("poidsRouleau"));
-    const pm=parseFloat(val("poidsMetre"));
-    const box=document.getElementById("longueurFeuillard");
-    if(pr>0 && pm>0){
-      const longueur=(pr*1000)/pm;
-      box.textContent="Rouleau de "+formatMeters(longueur)+" m";
-      box.style.display="block";
-    } else box.style.display="none";
-  }
-
-  function updateLongueurPieces(){
-    const nb=parseFloat(val("nbPieces"));
-    const ppp=parseFloat(val("piecesParPas"));
-    const tp=parseFloat(val("taillePas"));
-    const box=document.getElementById("longueurPieces");
-    if(nb>0 && ppp>0 && tp>0){
-      const longueur=(nb/ppp)*(tp/1000);
-      box.textContent="Bobine de "+formatMeters(longueur)+" m";
-      box.style.display="block";
-    } else box.style.display="none";
-  }
-
-  function calculFeuillard(){
-    const pm=parseFloat(val("poidsMetre"));
-    const pr=parseFloat(val("poidsRouleau"));
-    const v=parseFloat(val("vitesseFeuillard"));
-    const out=document.getElementById("resultFeuillard");
-
-    if(pm>0 && pr>0 && v>0){
-      const kgpm=pm/1000;
-      const dureeH=pr/(kgpm*v);
-      const minTotal=Math.round(dureeH*60);
-      durees.feuillard=minTotal;
-
-      out.className="result success";
-      out.textContent=`Durée : ${Math.floor(minTotal/60)} h ${minTotal%60} min`;
-      show("timeFeuillard");
-
-      if(val("startTimeFeuillard")) validerHeure("feuillard");
-      else{
-        document.getElementById("startTimeFeuillard").value=nowHHMM();
-        validerHeure("feuillard");
-      }
-
-      saveState();
-    } else {
-      durees.feuillard=null;
-      out.className="result error";
-      out.textContent="Champs incorrects.";
-      hide("timeFeuillard");
-    }
-  }
-
-  function calculPieces(){
-    const nb=parseFloat(val("nbPieces"));
-    const ppp=parseFloat(val("piecesParPas"));
-    const tm=parseFloat(val("taillePas"));
-    const v=parseFloat(val("vitessePieces"));
-    const out=document.getElementById("resultPieces");
-
-    if(nb>0 && ppp>0 && tm>0 && v>0){
-      const tmM=tm/1000;
-      const dureeH=(nb*tmM)/(ppp*v);
-      const minTotal=Math.round(dureeH*60);
-      durees.pieces=minTotal;
-
-      out.className="result success";
-      out.textContent=`Durée : ${Math.floor(minTotal/60)} h ${minTotal%60} min`;
-      show("timePieces");
-
-      if(val("startTimePieces")) validerHeure("pieces");
-      else{
-        document.getElementById("startTimePieces").value=nowHHMM();
-        validerHeure("pieces");
-      }
-
-      saveState();
-    } else {
-      durees.pieces=null;
-      out.className="result error";
-      out.textContent="Champs incorrects.";
-      hide("timePieces");
-    }
-  }
-
-  function setStartNow(t){
-    const id = (t==="feuillard" ? "startTimeFeuillard" : "startTimePieces");
-    document.getElementById(id).value = nowHHMM();
-    validerHeure(t);
-    saveState();
-  }
-
-  function validerHeure(t){
-    const dur = (t==="feuillard" ? durees.feuillard : durees.pieces);
-    if(!dur) return;
-
-    const idIn  = (t==="feuillard" ? "startTimeFeuillard" : "startTimePieces");
-    const idOut = (t==="feuillard" ? "endTimeFeuillard"  : "endTimePieces");
-
-    const startVal=val(idIn);
-    if(!startVal){
-      document.getElementById(idOut).textContent="";
-      return;
-    }
-
-    const start=parseTimeToDate(startVal);
-    const end=addMin(start,dur);
-
-    const sujet=(t==="feuillard"?"le rouleau":"la bobine");
-    const pronom=(t==="feuillard"?"il":"elle");
-
-    document.getElementById(idOut).textContent =
-      `Si ${sujet} commence à ${formatHHMM(start)}, ${pronom} terminera à ${formatHHMM(end)}.`;
-  }
-
-  function resetAll(){
-    localStorage.removeItem("outilDuree_v15");
-    durees.feuillard=null;
-    durees.pieces=null;
-    hideAllSections();
-
-    ["poidsRouleau","poidsMetre","vitesseFeuillard",
-     "nbPieces","piecesParPas","taillePas","vitessePieces",
-     "startTimeFeuillard","startTimePieces"].forEach(id=>{
-       const el=document.getElementById(id);
-       if(el) el.value="";
-     });
-
-    ["resultFeuillard","resultPieces","endTimeFeuillard","endTimePieces","longueurFeuillard","longueurPieces"].forEach(id=>{
-      const el=document.getElementById(id);
-      if(el){ el.textContent=""; el.style.display="none"; }
-    });
-
-    document.getElementById("typeChoix").value="";
-  }
-
-  window.addEventListener("load", ()=>{
-    loadState();
-    onTypeChange();
-    updateLongueurFeuillard();
-    updateLongueurPieces();
-  });
-
-</script>
-
-<!-- SERVICE WORKER EN VERSION 15 -->
-<script>
-if('serviceWorker' in navigator){
-  window.addEventListener('load', async () => {
-    try {
-      const reg = await navigator.serviceWorker.register('./sw.js?v=15');
-      reg.addEventListener('updatefound', () => {
-        const nw = reg.installing; if(!nw) return;
-        nw.addEventListener('statechange', () => {
-          if(nw.state==='installed' && navigator.serviceWorker.controller)
-            if(reg.waiting) reg.waiting.postMessage({ type:'SKIP_WAITING' });
-        });
-      });
-      navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
-    } catch(e){}
-  });
+/* -------------------------------
+   SAUVEGARDE
+--------------------------------*/
+function saveState(){
+  const s = {
+    type: g("typeChoix").value,
+    poidsRouleau: g("poidsRouleau").value,
+    poidsMetre: g("poidsMetre").value,
+    vitesseFeuillard: g("vitesseFeuillard").value,
+    nbPieces: g("nbPieces").value,
+    piecesParPas: g("piecesParPas").value,
+    taillePas: g("taillePas").value,
+    vitessePieces: g("vitessePieces").value,
+    startF: g("startTimeFeuillard").value,
+    startP: g("startTimePieces").value
+  };
+  localStorage.setItem("outilDuree_3_1", JSON.stringify(s));
 }
+
+function loadState(){
+  const raw = localStorage.getItem("outilDuree_3_1");
+  if(!raw) return;
+  const s = JSON.parse(raw);
+
+  g("typeChoix").value = s.type || "";
+  g("poidsRouleau").value = s.poidsRouleau || "";
+  g("poidsMetre").value = s.poidsMetre || "";
+  g("vitesseFeuillard").value = s.vitesseFeuillard || "";
+  g("nbPieces").value = s.nbPieces || "";
+  g("piecesParPas").value = s.piecesParPas || "";
+  g("taillePas").value = s.taillePas || "";
+  g("vitessePieces").value = s.vitessePieces || "";
+  g("startTimeFeuillard").value = s.startF || "";
+  g("startTimePieces").value = s.startP || "";
+
+  onTypeChange();
+  updateLongueurFeuillard();
+  updateLongueurPieces();
+  updateFin("feuillard");
+  updateFin("pieces");
+}
+
+/* -------------------------------
+   AFFICHAGE SECTIONS
+--------------------------------*/
+function onTypeChange(){
+  g("sectionFeuillard").style.display = "none";
+  g("sectionPieces").style.display = "none";
+
+  if(g("typeChoix").value==="feuillard") g("sectionFeuillard").style.display="block";
+  if(g("typeChoix").value==="pieces") g("sectionPieces").style.display="block";
+
+  saveState();
+}
+
+/* -------------------------------
+   LONGUEUR ROUL./BOBINE
+--------------------------------*/
+function updateLongueurFeuillard(){
+  const pr = parseFloat(g("poidsRouleau").value);
+  const pm = parseFloat(g("poidsMetre").value);
+  const box = g("longueurFeuillard");
+
+  if(pr>0 && pm>0){
+    const m = (pr*1000)/pm;
+    box.innerText = "Rouleau de " + (m>=100?Math.round(m):Math.round(m*10)/10).toString().replace(".",",") + " m";
+    box.style.display="block";
+  } else box.style.display="none";
+}
+
+function updateLongueurPieces(){
+  const nb = parseFloat(g("nbPieces").value);
+  const ppp= parseFloat(g("piecesParPas").value);
+  const tp = parseFloat(g("taillePas").value);
+  const box = g("longueurPieces");
+
+  if(nb>0 && ppp>0 && tp>0){
+    const m = (nb/ppp)*(tp/1000);
+    box.innerText = "Bobine de " + (m>=100?Math.round(m):Math.round(m*10)/10).toString().replace(".",",") + " m";
+    box.style.display="block";
+  } else box.style.display="none";
+}
+
+/* -------------------------------
+   CALCULS DUREE
+--------------------------------*/
+let durees = { feuillard:null, pieces:null };
+
+function calculFeuillard(){
+  const pm=parseFloat(g("poidsMetre").value);
+  const pr=parseFloat(g("poidsRouleau").value);
+  const v =parseFloat(g("vitesseFeuillard").value);
+  const out=g("resultFeuillard");
+
+  if(pm>0 && pr>0 && v>0){
+    const h = pr / ((pm/1000)*v);
+    const min = Math.round(h*60);
+    durees.feuillard = min;
+
+    out.className="result success";
+    out.innerText = `Durée : ${Math.floor(min/60)} h ${min%60} min`;
+
+    updateFin("feuillard");
+    saveState();
+  } else {
+    out.className="result error";
+    out.innerText = "Champs incorrects.";
+    durees.feuillard = null;
+    g("endTimeFeuillard").innerText="";
+  }
+}
+
+function calculPieces(){
+  const nb =parseFloat(g("nbPieces").value);
+  const ppp=parseFloat(g("piecesParPas").value);
+  const tp =parseFloat(g("taillePas").value);
+  const v  =parseFloat(g("vitessePieces").value);
+  const out=g("resultPieces");
+
+  if(nb>0 && ppp>0 && tp>0 && v>0){
+    const h = (nb*(tp/1000))/(ppp*v);
+    const min=Math.round(h*60);
+    durees.pieces=min;
+
+    out.className="result success";
+    out.innerText=`Durée : ${Math.floor(min/60)} h ${min%60} min`;
+
+    updateFin("pieces");
+    saveState();
+  } else {
+    out.className="result error";
+    out.innerText="Champs incorrects.";
+    durees.pieces=null;
+    g("endTimePieces").innerText="";
+  }
+}
+
+/* -------------------------------
+   HEURE DE FIN
+--------------------------------*/
+function updateFin(t){
+  const dur = t==="feuillard" ? durees.feuillard : durees.pieces;
+  if(!dur) return;
+
+  const startId = t==="feuillard" ? "startTimeFeuillard" : "startTimePieces";
+  const endId   = t==="feuillard" ? "endTimeFeuillard"   : "endTimePieces";
+
+  const startVal = g(startId).value;
+  if(!startVal){
+    g(endId).innerText="";
+    return;
+  }
+
+  const start = timeToDate(startVal);
+  const end   = addMin(start, dur);
+
+  const sujet = (t==="feuillard"?"le rouleau":"la bobine");
+  const pronom= (t==="feuillard"?"il":"elle");
+
+  g(endId).innerText =
+    `Si ${sujet} commence à ${fmt(start)}, ${pronom} terminera à ${fmt(end)}.`;
+}
+
+function setStartNow(t){
+  const id = (t==="feuillard" ? "startTimeFeuillard" : "startTimePieces");
+  g(id).value = nowHHMM();
+  updateFin(t);
+  saveState();
+}
+
+/* -------------------------------
+   RESET
+--------------------------------*/
+function resetAll(){
+  localStorage.removeItem("outilDuree_3_1");
+  const ids=[
+    "poidsRouleau","poidsMetre","vitesseFeuillard",
+    "nbPieces","piecesParPas","taillePas","vitessePieces",
+    "startTimeFeuillard","startTimePieces"
+  ];
+  ids.forEach(i=>g(i).value="");
+
+  g("resultFeuillard").innerText="";
+  g("resultPieces").innerText="";
+  g("endTimeFeuillard").innerText="";
+  g("endTimePieces").innerText="";
+  g("longueurFeuillard").style.display="none";
+  g("longueurPieces").style.display="none";
+
+  g("typeChoix").value="";
+  g("sectionFeuillard").style.display="none";
+  g("sectionPieces").style.display="none";
+}
+
+/* -------------------------------
+   INIT
+--------------------------------*/
+window.addEventListener("load", loadState);
 </script>
 
 </body>
